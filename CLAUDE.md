@@ -6,9 +6,9 @@ Before your first read of every request, print one line: `row: <name> -> <files>
 
 ## §STATE
 ```
-phase:   PLANNING        # PLANNING > STAGING > DETAILING > EXECUTING > CLOSING > REPLANNING
-stage:   0/0             # no stages derived yet
-NEXT:    Fill memory/PLAN.md with the user, then freeze it and run /stage to derive STAGES.md.
+phase:   STAGING         # PLANNING > STAGING > DETAILING > EXECUTING > CLOSING > REPLANNING
+stage:   0/7             # 7 stages approved 2026-10-06; none started, no stage is CURRENT
+NEXT:    Paused by the user before DETAILING. On their go, /stage details S00 — nothing before that.
 ASK:     0               # count of lines under memory/CURRENT.md §Open questions
 updated: 2026-10-06
 ```
