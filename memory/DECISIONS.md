@@ -49,6 +49,8 @@ D-018 | 2026-10-06 | Share the standard `%USERPROFILE%\wekafiles` rather than fo
 
 D-019 | 2026-10-06 | `jpackage --type app-image` then Inno Setup 7 for the installer, per-user, no admin | app-image needs nothing but the JDK and gives a portable build for free; Inno adds LZMA2 compression that matters for a bundled JRE, per-user installs with no UAC, dark-mode installer UI, signed uninstallers, and `AppMutex`/`CloseApplications`, which is the hard half of self-updating on Windows | jpackage's own MSI/EXE, which needs WiX plus the .NET SDK on the build machine and has an unthemeable UI; MSIX, whose container fights an app whose job is spawning child processes; Velopack, which still has no JVM SDK
 
+D-020 | 2026-10-06 | Add a `decide` router row reading §STATE, CURRENT, STAGES, DECISIONS and PLAN | "where am I and what must I choose" recurs at every stage boundary and matched no row, so the first session to hit it declared `where` and then read the kickoff set anyway; PLAN is in the set because a row whose job is recommending must see the eleven NON-goals or it will eventually recommend one | widening `where` to also allow CURRENT.md §Open questions, which costs no new line but still cannot explain the choices themselves; leaving it alone, which re-pays the wrong-row cost once per stage boundary, seven more times
+
 ## §Retired
 <!-- Superseded lines move here, unchanged, so the reasoning survives without cluttering the
      live list. Never delete one. -->

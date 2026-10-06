@@ -24,9 +24,9 @@ HARD RULE : before dropping the third block, promote anything still true into FA
   slice exists to prove the engine split, run model, cancel and history at once.
 - FACTS.md: the false clause of "No Weka GUI source exists yet; PLAN.md is still empty" was
   dropped with the user's yes; the true clause stays. That closed the only open question.
-- Router gap found: a "what is left to decide" request matches no row in §ROUTER. This session
-  declared `where`, then had to read the kickoff set anyway. Adding a row is an ask-first edit
-  to CLAUDE.md — proposed to the user, not done.
+- Router gap found and closed: a "what is left to decide" request matched no row in §ROUTER.
+  This session declared `where`, then had to read the kickoff set anyway. The user approved a
+  `decide` row; PLAN sits in its read set so a recommendation cannot contradict a NON-goal.
 - Committed as eebde5f.
 - NEXT: do nothing until the user says go. Then /stage details S00 only, never a later stage.
 

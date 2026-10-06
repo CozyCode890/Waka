@@ -18,6 +18,7 @@ updated: 2026-10-06
 |---|---|---|---|
 | `trivial` — question, no code | — | — | everything |
 | `where` — am I / what's next | §STATE above | — | everything |
+| `decide` — what is left to choose | §STATE, CURRENT, STAGES, DECISIONS, PLAN | — | FACTS, SOURCE, SESSION, done/ |
 | `edit` — one file, or fix a bug | FACTS, CURRENT | that file + its direct imports | PLAN, STAGES, SOURCE, done/ |
 | `debug` | FACTS, CURRENT | failing file + stack-trace paths | PLAN, STAGES, done/ |
 | `feature-in` — inside this stage | FACTS, CURRENT, SOURCE | modules SOURCE names | PLAN, done/ |
