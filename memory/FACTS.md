@@ -25,6 +25,8 @@ file name — so a later session can grep for that name and actually find this l
 [pref] User writes Vietnamese and expects Vietnamese replies; every memory file stays in English — 2026-10-06
 [pref] Show a plan and wait for approval before creating or rewriting files — 2026-10-06
 [pref] Surface debatable design choices as multiple-choice questions, not prose — 2026-10-06
+[pref] Every option list must say which option is recommended and why — a bare list is not an answer — 2026-10-06
+[pref] Explain concretely: name the file, say what breaks. Abstract process talk gets rejected outright — 2026-10-06
 [proj] No Weka GUI source exists yet — 2026-10-06
 [proj] PLAN.md was frozen 2026-10-06; stack is JDK 25 + JavaFX 27 + AtlantaFX 3.0.0 + weka-stable 3.8.7, GPLv3 — 2026-10-06
 [env] Temurin JDK 21.0.12 is installed and JAVA_HOME points at it; the project targets JDK 25, which is not installed yet — 2026-10-06

@@ -7,8 +7,8 @@ Before your first read of every request, print one line: `row: <name> -> <files>
 ## §STATE
 ```
 phase:   STAGING         # PLANNING > STAGING > DETAILING > EXECUTING > CLOSING > REPLANNING
-stage:   0/7             # 7 stages approved 2026-10-06; none started, no stage is CURRENT
-NEXT:    Paused by the user before DETAILING. On their go, /stage details S00 — nothing before that.
+stage:   0/7             # S00..S06 approved 2026-10-06; none started, no stage is CURRENT
+NEXT:    Wait for the user's go, then run /stage to detail S00 only — Mica, JavaFX 27, big table.
 ASK:     0               # count of lines under memory/CURRENT.md §Open questions
 updated: 2026-10-06
 ```
