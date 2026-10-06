@@ -1,0 +1,33 @@
+# memory/ is TRACKED ON PURPOSE.
+# Claude has automatic write access to several files under memory/. Version control is what
+# makes a bad automatic edit — a pruned fact, a clobbered CURRENT.md — visible and reversible.
+# Do not add memory/ here.
+
+# Build output — generated, never read. Mirrors memory/SOURCE.md §NEVER-READ.
+target/
+build/
+out/
+bin/
+*.class
+
+# Jars. If weka.jar ends up vendored rather than pulled by the build tool, add an exception
+# for its path here and record that choice in memory/DECISIONS.md.
+*.jar
+*.war
+
+# IDE
+.idea/
+*.iml
+.vscode/
+.settings/
+.classpath
+.project
+nbproject/private/
+
+# Gradle / Maven wrappers keep their scripts; drop their caches
+.gradle/
+
+# OS
+Thumbs.db
+desktop.ini
+.DS_Store

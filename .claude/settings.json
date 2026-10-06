@@ -1,0 +1,14 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "pwsh -NoProfile -NonInteractive -File \"D:\\Weka-GUI\\.claude\\hooks\\print-state.ps1\""
+          }
+        ]
+      }
+    ]
+  }
+}
