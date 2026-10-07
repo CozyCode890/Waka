@@ -1,0 +1,1146 @@
+<title>Weka-GUI Shell Mockup</title>
+
+<!--
+  Weka-GUI — design wave W1 (shell overview). Source of truth for the shell's tokens.
+  Graded by the user; verdicts land in memory/DESIGN.md §Ledger.
+
+  DISCIPLINE: every colour, size and radius below is a token in the two .win[data-app]
+  blocks. No magic numbers in component rules, because that token table is what gets
+  transcribed into AtlantaFX CSS at S01. Only constructs with a JavaFX equivalent are
+  used (no flexbox tricks that HBox/VBox/GridPane cannot express, no calc() chains,
+  no multi-layer box-shadow).
+
+  FONTS: deliberately the Windows system stack, not a webfont. The app will render in
+  Segoe UI Variable Text / Cascadia Mono, so the mockup must too.
+
+  CANNOT BE JUDGED HERE: real Mica translucency, JavaFX font rendering, table
+  performance. Those are S00/S01 exit tests on the real machine.
+-->
+
+<style>
+/* ──────────────────────────────────────────────────────────────────────────
+   Layout concept: a fixed 1280x800 window mock sitting on a desktop ground,
+   uniformly scaled to fit; a review harness above it, the token spec below.
+   App tokens are scoped to .win[data-app] so the MOCKED app theme is fully
+   independent of the page theme the viewer is in.
+   ────────────────────────────────────────────────────────────────────────── */
+
+/* ===== page + harness tokens (light) ===== */
+:root{
+  --p-bg:#E9E9EC;
+  --p-surface:#FFFFFF;
+  --p-surface2:#F3F3F5;
+  --p-fg:#1B1C1F;
+  --p-fg2:#5A5E66;
+  --p-fg3:#878C95;
+  --p-line:#D4D6DB;
+  --p-accent:#1F6F6B;
+  --p-accent-fg:#FFFFFF;
+  --p-accent-sub:rgba(31,111,107,.10);
+  --p-ground-a:#3A4A63;
+  --p-ground-b:#6E5B74;
+  --p-font:'Segoe UI Variable Text','Segoe UI',system-ui,-apple-system,'Helvetica Neue',sans-serif;
+  --p-mono:'Cascadia Mono',Consolas,'SF Mono',ui-monospace,monospace;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --p-bg:#121316;
+  --p-surface:#1C1E22;
+  --p-surface2:#23262B;
+  --p-fg:#EDEEF0;
+  --p-fg2:#9BA1AB;
+  --p-fg3:#6E757F;
+  --p-line:#2E3138;
+  --p-accent:#5FB3AF;
+  --p-accent-fg:#06201F;
+  --p-accent-sub:rgba(95,179,175,.14);
+  --p-ground-a:#1E2836;
+  --p-ground-b:#372D40;
+  color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --p-bg:#121316;
+  --p-surface:#1C1E22;
+  --p-surface2:#23262B;
+  --p-fg:#EDEEF0;
+  --p-fg2:#9BA1AB;
+  --p-fg3:#6E757F;
+  --p-line:#2E3138;
+  --p-accent:#5FB3AF;
+  --p-accent-fg:#06201F;
+  --p-accent-sub:rgba(95,179,175,.14);
+  --p-ground-a:#1E2836;
+  --p-ground-b:#372D40;
+  color-scheme:dark;
+}
+
+body{
+  background:var(--p-bg);
+  color:var(--p-fg);
+  font-family:var(--p-font);
+  margin:0;
+}
+.page{ padding-inline:16px; padding-block:16px 48px; max-width:1360px; margin:0 auto; }
+*{ box-sizing:border-box; }
+[hidden]{ display:none !important; }   /* .doc/.status/.toast set display, which would beat it */
+:focus-visible{ outline:2px solid var(--p-accent); outline-offset:2px; }
+
+/* ===== harness ===== */
+.harness{
+  display:flex; flex-wrap:wrap; align-items:center; gap:8px 14px;
+  background:var(--p-surface); border:1px solid var(--p-line);
+  border-radius:10px; padding:10px 12px; margin-bottom:14px;
+}
+.harness-tag{
+  font-size:10px; font-weight:700; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--p-accent); background:var(--p-accent-sub);
+  border-radius:4px; padding:4px 7px; white-space:nowrap;
+}
+.hgroup{ display:flex; align-items:center; gap:0; border:1px solid var(--p-line); border-radius:7px; overflow:hidden; }
+.hgroup button{
+  font:inherit; font-size:12.5px; border:0; background:transparent; color:var(--p-fg2);
+  padding:6px 11px; cursor:pointer; border-right:1px solid var(--p-line);
+}
+.hgroup button:last-child{ border-right:0; }
+.hgroup button:hover{ background:var(--p-surface2); color:var(--p-fg); }
+.hgroup button[aria-pressed="true"]{ background:var(--p-accent); color:var(--p-accent-fg); font-weight:600; }
+.hlabel{ font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:var(--p-fg3); font-weight:600; }
+.hscale{ margin-left:auto; font-family:var(--p-mono); font-size:11.5px; color:var(--p-fg3); font-variant-numeric:tabular-nums; }
+
+/* ===== desktop ground + scaling ===== */
+.stagewrap{
+  position:relative; overflow:hidden; border-radius:10px;
+  background:linear-gradient(138deg,var(--p-ground-a),var(--p-ground-b));
+  border:1px solid var(--p-line);
+}
+.stage{ transform-origin:top left; width:1280px; height:800px; position:relative; }
+.stage::before{ /* a little wallpaper structure so translucency has something to show */
+  content:""; position:absolute; inset:0;
+  background:
+    radial-gradient(44% 58% at 16% 22%, rgba(255,255,255,.22), transparent 70%),
+    radial-gradient(38% 46% at 84% 78%, rgba(255,255,255,.14), transparent 70%),
+    repeating-linear-gradient(118deg, rgba(255,255,255,.055) 0 2px, transparent 2px 26px);
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   APP TOKENS — this is the table that becomes memory/DESIGN.md §Tokens.
+   Values are real Fluent 2 / Windows 11 values, not invented ones.
+   ══════════════════════════════════════════════════════════════════════════ */
+.win[data-app="dark"]{
+  --mica:#202020;
+  --mica-tint:rgba(32,32,32,.80);
+  --layer:rgba(58,58,58,.30);
+  --card:rgba(255,255,255,.0512);
+  --ctl:rgba(255,255,255,.0605);
+  --ctl-hover:rgba(255,255,255,.0837);
+  --subtle-hover:rgba(255,255,255,.0605);
+  --divider:rgba(255,255,255,.0837);
+  --stroke-ctl:rgba(255,255,255,.0698);
+  --stroke-surface:rgba(117,117,117,.40);
+  --fg1:#FFFFFF;
+  --fg2:rgba(255,255,255,.786);
+  --fg3:rgba(255,255,255,.5442);
+  --fg-dis:rgba(255,255,255,.3628);
+  --accent:#4CC2FF;
+  --accent-fg:#000000;
+  --accent-sub:rgba(76,194,255,.16);
+  --ok:#6CCB5F;
+  --warn:#FCE100;
+  --bad:#FF99A4;
+  --caption-bg:#202020;
+  --cls1:#5B8FF9; --cls2:#E8684A; --cls3:#5AD8A6;
+  --elev:0 8px 16px rgba(0,0,0,.28);
+  --elev-flyout:0 16px 32px rgba(0,0,0,.36);
+}
+.win[data-app="light"]{
+  --mica:#F3F3F3;
+  --mica-tint:rgba(243,243,243,.82);
+  --layer:rgba(255,255,255,.50);
+  --card:rgba(255,255,255,.70);
+  --ctl:rgba(255,255,255,.70);
+  --ctl-hover:rgba(249,249,249,.50);
+  --subtle-hover:rgba(0,0,0,.0373);
+  --divider:rgba(0,0,0,.0803);
+  --stroke-ctl:rgba(0,0,0,.0578);
+  --stroke-surface:rgba(117,117,117,.40);
+  --fg1:rgba(0,0,0,.8956);
+  --fg2:rgba(0,0,0,.6063);
+  --fg3:rgba(0,0,0,.4458);
+  --fg-dis:rgba(0,0,0,.3614);
+  --accent:#005FB8;
+  --accent-fg:#FFFFFF;
+  --accent-sub:rgba(0,95,184,.10);
+  --ok:#0F7B0F;
+  --warn:#9D5D00;
+  --bad:#C42B1C;
+  --caption-bg:#F3F3F3;
+  --cls1:#3A6FD8; --cls2:#C9502F; --cls3:#2E9E74;
+  --elev:0 8px 16px rgba(0,0,0,.14);
+  --elev-flyout:0 16px 32px rgba(0,0,0,.18);
+}
+/* geometry — theme independent */
+.win{
+  --h-caption:32px;   /* native Win11 caption at 100% scale — NOT ours (D-014) */
+  --h-doctab:35px;
+  --h-segbar:32px;
+  --h-toolbar:40px;
+  --h-statusbar:22px;
+  --h-panel:224px;
+  --h-row:26px;
+  --w-rail:48px;
+  --w-side:260px;
+  --r-ctl:4px;
+  --r-card:8px;
+  --r-win:8px;
+  --sp:4px;
+  --fs-cap:12px;
+  --fs-body:14px;
+  --fs-sub:20px;
+}
+
+/* ===== window shell ===== */
+.win{
+  position:absolute; inset:28px;
+  border-radius:var(--r-win);
+  overflow:hidden;
+  display:grid;
+  grid-template-rows:var(--h-caption) 1fr auto var(--h-statusbar);
+  background:var(--mica-tint);
+  backdrop-filter:blur(64px) saturate(1.6);
+  box-shadow:var(--elev);
+  color:var(--fg1);
+  font-size:var(--fs-body);
+  border:1px solid var(--stroke-surface);
+}
+.win[data-mica="off"]{
+  background:var(--mica);
+  backdrop-filter:none;
+  border-radius:0;
+  box-shadow:0 0 0 1px var(--stroke-surface);
+  border:0;
+}
+/* G-016 graded: with no translucent layer behind them, the 5%/6% fills collapse into the
+   base. Fluent itself swaps to solid Layer colours when acrylic is unavailable. */
+.win[data-mica="off"][data-app="dark"]{
+  --card:rgba(255,255,255,.098);
+  --ctl:rgba(255,255,255,.084);
+  --divider:rgba(255,255,255,.118);
+}
+.win[data-mica="off"][data-app="light"]{
+  --card:#FAFAFA;
+  --ctl:#FDFDFD;
+  --divider:rgba(0,0,0,.112);
+}
+
+/* caption bar — drawn by Windows, recoloured via DWMWA_CAPTION_COLOR */
+.caption{
+  position:relative;
+  background:var(--caption-bg);
+  display:flex; align-items:center;
+  padding-left:12px;
+  border-bottom:1px solid var(--divider);
+}
+.win[data-mica="on"] .caption{ background:transparent; border-bottom:0; }
+.cap-title{ font-size:var(--fs-cap); color:var(--fg2); display:flex; align-items:center; gap:8px; }
+.cap-mark{ width:14px; height:14px; border-radius:3px; background:var(--accent); display:grid; place-items:center;
+  font-size:9px; font-weight:800; color:var(--accent-fg); }
+.cap-btns{ margin-left:auto; display:flex; }
+.cap-btns span{ width:46px; height:var(--h-caption); display:grid; place-items:center; color:var(--fg2); font-size:10px; }
+.cap-btns span:last-child:hover{ background:#C42B1C; color:#fff; }
+.cap-btns span:hover{ background:var(--subtle-hover); }
+
+/* body row: content | side panel | rail   (rail on the RIGHT — D-013) */
+.bodyrow{ display:grid; grid-template-columns:1fr var(--w-side) var(--w-rail); min-height:0; }
+.win[data-side="closed"] .bodyrow{ grid-template-columns:1fr 0 var(--w-rail); }
+.win[data-side="closed"] .side{ display:none; }
+
+/* ===== rail ===== */
+.rail{
+  position:relative;
+  order:3; border-left:1px solid var(--divider);
+  display:flex; flex-direction:column; align-items:center;
+  padding-block:4px;
+}
+.railbtn{
+  width:var(--w-rail); height:var(--w-rail);
+  display:grid; place-items:center; position:relative;
+  color:var(--fg2); cursor:pointer;
+}
+.railbtn:hover{ color:var(--fg1); background:var(--subtle-hover); }
+.railbtn[aria-current="true"]{ color:var(--fg1); }
+.railbtn[aria-current="true"]::before{
+  content:""; position:absolute; left:0; top:12px; bottom:12px; width:2px;
+  border-radius:1px; background:var(--accent);
+}
+.railbtn svg{ width:20px; height:20px; }
+.rail-sp{ flex:1; }
+
+/* ===== side panel ===== */
+.side{ order:2; border-left:1px solid var(--divider); display:grid; grid-template-rows:auto 1fr; min-height:0; }
+.side-head{
+  height:34px; display:flex; align-items:center; gap:6px;
+  padding-inline:12px 8px;
+  font-size:11px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--fg2);
+}
+.side-head .sp{ flex:1; }
+.iconbtn{ width:24px; height:24px; border-radius:var(--r-ctl); display:grid; place-items:center; color:var(--fg2); cursor:pointer; }
+.iconbtn:hover{ background:var(--subtle-hover); color:var(--fg1); }
+.iconbtn svg{ width:14px; height:14px; }
+.side-body{ position:relative; overflow:hidden; padding-bottom:8px; }
+.grouphead{
+  height:var(--h-row); display:flex; align-items:center; gap:5px;
+  padding-inline:8px; font-size:var(--fs-cap); color:var(--fg2); cursor:pointer;
+}
+.grouphead:hover{ background:var(--subtle-hover); }
+.grouphead b{ font-weight:600; letter-spacing:.02em; }
+.grouphead .n{ margin-left:auto; color:var(--fg3); font-variant-numeric:tabular-nums; }
+.treerow{
+  height:var(--h-row); display:flex; align-items:center; gap:7px;
+  padding-inline:22px 8px; font-size:13px; color:var(--fg2); cursor:pointer; position:relative;
+}
+.treerow:hover{ background:var(--subtle-hover); color:var(--fg1); }
+.treerow[aria-selected="true"]{ background:var(--accent-sub); color:var(--fg1); }
+.treerow[aria-selected="true"]::before{
+  content:""; position:absolute; left:0; top:4px; bottom:4px; width:2px; background:var(--accent); border-radius:1px;
+}
+.treerow svg{ width:14px; height:14px; color:var(--fg3); flex:none; }
+.treerow .meta{ margin-left:auto; font-size:11px; color:var(--fg3); font-variant-numeric:tabular-nums; }
+.treerow .nm{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+
+/* ===== content: document tabs + document ===== */
+.content{ order:1; display:grid; grid-template-rows:var(--h-doctab) 1fr; min-width:0; min-height:0; }
+.doctabs{ position:relative; display:flex; align-items:stretch; border-bottom:1px solid var(--divider); }
+.doctab{
+  position:relative; display:flex; align-items:center; gap:7px;
+  padding-inline:12px 8px; max-width:200px;
+  font-size:13px; color:var(--fg3); cursor:pointer;
+  border-right:1px solid var(--divider);
+}
+.doctab:hover{ color:var(--fg2); background:var(--subtle-hover); }
+.doctab[aria-selected="true"]{ color:var(--fg1); background:var(--card); }
+.doctab[aria-selected="true"]::before{
+  content:""; position:absolute; left:0; right:0; top:0; height:2px; background:var(--accent);
+}
+.doctab .nm{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.doctab .dot{ width:7px; height:7px; border-radius:50%; background:var(--fg2); flex:none; }
+.doctab .x{ width:18px; height:18px; border-radius:var(--r-ctl); display:grid; place-items:center; flex:none; color:var(--fg3); }
+.doctab .x:hover{ background:var(--ctl-hover); color:var(--fg1); }
+.doctab .x svg{ width:10px; height:10px; }
+.doctabs-sp{ flex:1; border-right:0; }
+
+.doc{ display:grid; grid-template-rows:auto auto 1fr; min-height:0; }
+
+/* segmented bar — Explorer's six tasks, Explorer's exact words (D-012) */
+.dochead{ position:relative; padding:12px 16px 10px; }
+.segbar{
+  display:inline-flex; height:var(--h-segbar); padding:2px;
+  background:var(--ctl); border:1px solid var(--stroke-ctl); border-radius:var(--r-ctl);
+}
+.seg{
+  display:flex; align-items:center; padding-inline:13px;
+  font-size:13px; color:var(--fg2); border-radius:3px; cursor:pointer; white-space:nowrap;
+}
+.seg:hover{ background:var(--ctl-hover); color:var(--fg1); }
+.seg[aria-current="true"]{ background:var(--accent-sub); color:var(--accent); font-weight:600; box-shadow:inset 0 0 0 1px var(--accent-sub); }
+
+/* per-segment toolbar */
+.toolbar{
+  position:relative;
+  height:var(--h-toolbar); display:flex; align-items:center; gap:8px;
+  padding-inline:16px; border-bottom:1px solid var(--divider);
+}
+.btn{
+  height:28px; display:inline-flex; align-items:center; gap:6px; padding-inline:11px;
+  font-size:13px; border-radius:var(--r-ctl); cursor:pointer;
+  background:var(--ctl); border:1px solid var(--stroke-ctl); color:var(--fg1);
+}
+.btn:hover{ background:var(--ctl-hover); }
+.btn.accent{ background:var(--accent); border-color:transparent; color:var(--accent-fg); font-weight:600; }
+.btn.ghost{ background:transparent; border-color:transparent; color:var(--fg2); }
+.btn.ghost:hover{ background:var(--subtle-hover); color:var(--fg1); }
+.btn[aria-disabled="true"]{ color:var(--fg-dis); background:var(--ctl); cursor:default; }
+.btn svg{ width:13px; height:13px; }
+.tb-label{ font-size:var(--fs-cap); color:var(--fg3); }
+.optfield{
+  height:28px; flex:1; min-width:0; max-width:300px; display:flex; align-items:center;
+  padding-inline:9px; border-radius:var(--r-ctl);
+  background:var(--ctl); border:1px solid var(--stroke-ctl); border-bottom-color:var(--fg3);
+  font-family:var(--p-mono); font-size:12px; color:var(--fg2);
+  overflow:hidden; white-space:nowrap;
+}
+.tb-sp{ flex:1; }
+.vdiv{ width:1px; align-self:stretch; margin-block:7px; background:var(--divider); }
+
+/* preprocess body — Explorer's shape: attribute LIST, never a column per attribute */
+.pbody{ position:relative; display:grid; grid-template-columns:minmax(0,420px) minmax(0,1fr); gap:12px; padding:12px 16px 16px; min-height:0; }
+.card{
+  background:var(--card); border:1px solid var(--stroke-ctl); border-radius:var(--r-card);
+  display:grid; grid-template-rows:auto 1fr; min-height:0; overflow:hidden;
+}
+.card-head{
+  height:34px; display:flex; align-items:center; gap:8px; padding-inline:12px 8px;
+  border-bottom:1px solid var(--divider);
+  font-size:13px; font-weight:600; color:var(--fg1);
+}
+.card-head .sp{ flex:1; }
+.card-head .sub{ font-weight:400; font-size:var(--fs-cap); color:var(--fg3); }
+.card-body{ min-height:0; overflow:hidden; }
+
+.attrow{
+  height:var(--h-row); display:flex; align-items:center; gap:9px; padding-inline:12px;
+  font-size:13px; color:var(--fg2); cursor:pointer; position:relative;
+}
+.attrow:hover{ background:var(--subtle-hover); }
+.attrow[aria-selected="true"]{ background:var(--accent-sub); color:var(--fg1); }
+.attrow .no{ width:18px; text-align:right; color:var(--fg3); font-variant-numeric:tabular-nums; font-size:12px; }
+.attrow .ck{
+  width:15px; height:15px; border-radius:3px; border:1px solid var(--fg3); flex:none;
+  display:grid; place-items:center;
+}
+.attrow .ck[data-on="1"]{ background:var(--accent); border-color:var(--accent); color:var(--accent-fg); }
+.attrow .ck svg{ width:9px; height:9px; }
+.attrow .ty{ margin-left:auto; font-size:11px; color:var(--fg3); letter-spacing:.04em; text-transform:uppercase; }
+
+.statgrid{ display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--divider); }
+.stat{ background:var(--card); padding:9px 12px 10px; }
+.stat .k{ font-size:11px; color:var(--fg3); letter-spacing:.03em; }
+.stat .v{ font-size:16px; font-variant-numeric:tabular-nums; color:var(--fg1); margin-top:2px; }
+.histwrap{ padding:14px 12px 10px; }
+.hist{ display:flex; align-items:flex-end; gap:3px; height:108px; }
+.hbar{ flex:1; display:flex; flex-direction:column-reverse; border-radius:2px 2px 0 0; overflow:hidden; }
+.hbar i{ display:block; }
+.hax{ display:flex; justify-content:space-between; margin-top:6px; font-size:11px; color:var(--fg3); font-variant-numeric:tabular-nums; }
+.legend{ display:flex; gap:14px; margin-top:10px; font-size:var(--fs-cap); color:var(--fg2); }
+.legend span{ display:inline-flex; align-items:center; gap:6px; }
+.legend i{ width:9px; height:9px; border-radius:2px; }
+
+/* welcome view */
+.welcome{ display:grid; place-content:center; justify-items:center; gap:0; text-align:center; padding:24px; }
+.welcome h1{ font-size:var(--fs-sub); font-weight:600; margin:0 0 6px; color:var(--fg1); text-wrap:balance; }
+.welcome p{ margin:0 0 20px; color:var(--fg3); font-size:13px; max-width:46ch; }
+.wrow{ display:flex; gap:10px; }
+.keyhint{ margin-top:22px; font-size:var(--fs-cap); color:var(--fg3); display:grid; gap:7px; justify-items:center; }
+.kbd{
+  font-family:var(--p-mono); font-size:11px; padding:2px 6px; border-radius:3px;
+  background:var(--ctl); border:1px solid var(--stroke-ctl); color:var(--fg2);
+}
+
+/* ===== bottom panel (D-017: tabbed output providers) ===== */
+.panel{ position:relative; height:var(--h-panel); border-top:1px solid var(--divider); display:grid; grid-template-rows:34px 1fr; min-height:0; }
+.win[data-panel="closed"] .panel{ display:none; }
+.panel-tabs{ position:relative; display:flex; align-items:center; gap:2px; padding-inline:12px 8px; }
+.ptab{
+  height:34px; display:flex; align-items:center; gap:6px; padding-inline:9px;
+  font-size:11px; font-weight:600; letter-spacing:.07em; text-transform:uppercase;
+  color:var(--fg3); cursor:pointer; position:relative;
+}
+.ptab:hover{ color:var(--fg2); }
+.ptab[aria-current="true"]{ color:var(--fg1); }
+.ptab[aria-current="true"]::after{
+  content:""; position:absolute; left:9px; right:9px; bottom:0; height:2px; background:var(--accent);
+}
+.ptab .badge{
+  font-size:10px; font-weight:700; letter-spacing:0; padding:1px 5px; border-radius:9px;
+  background:var(--bad); color:var(--mica); font-variant-numeric:tabular-nums;
+}
+.panel-sp{ flex:1; }
+.out{
+  overflow:hidden; padding:8px 14px 10px;
+  font-family:var(--p-mono); font-size:12px; line-height:1.55;
+  color:var(--fg2); white-space:pre; tab-size:4;
+}
+.out b{ color:var(--fg1); font-weight:600; }
+.out u{ color:var(--accent); text-decoration:none; }
+
+/* ===== status bar ===== */
+.status{
+  position:relative;
+  display:flex; align-items:center; gap:0;
+  border-top:1px solid var(--divider);
+  font-size:var(--fs-cap); color:var(--fg2);
+  background:var(--accent-sub);
+}
+.sitem{ display:flex; align-items:center; gap:6px; height:var(--h-statusbar); padding-inline:10px; cursor:default; }
+.sitem:hover{ background:var(--subtle-hover); }
+.sitem svg{ width:12px; height:12px; }
+.status-sp{ flex:1; }
+.sitem.run{ color:var(--accent); font-weight:600; }
+.sitem .cancel{ display:inline-flex; align-items:center; gap:4px; color:var(--bad); font-weight:600; }
+.meter{ width:46px; height:4px; border-radius:2px; background:var(--divider); overflow:hidden; }
+.meter i{ display:block; height:100%; background:var(--accent); }
+.nums{ font-variant-numeric:tabular-nums; }
+
+/* progress line under the status bar for a live run */
+.progline{ position:absolute; left:0; right:0; bottom:var(--h-statusbar); height:2px; background:var(--divider); }
+.progline i{ display:block; height:100%; width:58%; background:var(--accent); }
+
+/* ===== command palette ===== */
+.scrim{ position:absolute; inset:0; background:rgba(0,0,0,.30); }
+.palette{
+  position:absolute; top:76px; left:50%; translate:-50% 0; width:600px;
+  background:var(--layer); backdrop-filter:blur(40px) saturate(1.8);
+  border:1px solid var(--stroke-surface); border-radius:var(--r-card);
+  box-shadow:var(--elev-flyout); overflow:hidden;
+}
+.win[data-mica="off"] .palette{ background:var(--mica); backdrop-filter:none; }
+.pal-input{
+  height:38px; display:flex; align-items:center; gap:9px; padding-inline:12px;
+  border-bottom:1px solid var(--divider); color:var(--fg1); font-size:14px;
+}
+.pal-input svg{ width:15px; height:15px; color:var(--fg3); }
+.caret{ width:1px; height:17px; background:var(--accent); }
+.palrow{
+  height:34px; display:flex; align-items:center; gap:10px; padding-inline:12px;
+  font-size:13px; color:var(--fg2); cursor:pointer;
+}
+.palrow[aria-selected="true"]{ background:var(--accent-sub); color:var(--fg1); }
+.palrow svg{ width:14px; height:14px; color:var(--fg3); flex:none; }
+.palrow .grp{ color:var(--fg3); }
+.palrow .sp{ flex:1; }
+.pal-foot{ border-top:1px solid var(--divider); padding:7px 12px; font-size:11px; color:var(--fg3); display:flex; gap:14px; }
+
+/* ===== undo toast (no "are you sure?" anywhere — PLAN success test) ===== */
+.toast{
+  position:absolute; right:calc(var(--w-rail) + var(--w-side) + 16px);
+  bottom:calc(var(--h-statusbar) + 16px);
+  display:flex; align-items:center; gap:12px; padding:10px 10px 10px 14px;
+  background:var(--layer); backdrop-filter:blur(40px) saturate(1.8);
+  border:1px solid var(--stroke-surface); border-left:3px solid var(--accent);
+  border-radius:var(--r-card); box-shadow:var(--elev-flyout); font-size:13px; color:var(--fg1);
+}
+.win[data-mica="off"] .toast{ background:var(--mica); backdrop-filter:none; }
+
+/* ===== hotspots ===== */
+.hs{
+  position:absolute; z-index:40; width:19px; height:19px; border-radius:50%;
+  display:grid; place-items:center; cursor:pointer;
+  font-family:var(--p-mono); font-size:9.5px; font-weight:700; letter-spacing:-.03em;
+  background:#FFE066; color:#2A2200; box-shadow:0 0 0 1.5px #8A6D00, 0 2px 5px rgba(0,0,0,.45);
+}
+.hs:hover{ background:#FFF2B8; }
+.hs::after{
+  content:attr(data-tip); position:absolute; top:22px; left:0;
+  width:max-content; max-width:260px; white-space:normal;
+  padding:7px 9px; border-radius:6px;
+  background:#1A1A1A; color:#F2F2F2; font-family:var(--p-font); font-size:11.5px;
+  font-weight:400; letter-spacing:0; line-height:1.4;
+  box-shadow:0 6px 16px rgba(0,0,0,.4); opacity:0; pointer-events:none; transition:opacity .12s; z-index:50;
+}
+.hs:hover::after{ opacity:1; }
+.hs.l::after{ left:auto; right:0; }
+.win[data-hs="off"] .hs{ display:none; }
+
+/* ===== spec section ===== */
+.spec{ margin-top:28px; display:grid; gap:22px; }
+.spec h2{
+  font-size:12px; font-weight:700; letter-spacing:.12em; text-transform:uppercase;
+  color:var(--p-fg3); margin:0 0 10px; padding-bottom:7px; border-bottom:1px solid var(--p-line);
+}
+.spec h2 em{ font-style:normal; color:var(--p-accent); letter-spacing:.02em; text-transform:none; font-weight:600; }
+.tablewrap{ overflow-x:auto; border:1px solid var(--p-line); border-radius:9px; background:var(--p-surface); }
+table{ border-collapse:collapse; width:100%; font-size:12.5px; }
+th,td{ text-align:left; padding:7px 11px; border-bottom:1px solid var(--p-line); vertical-align:top; }
+th{ font-size:10.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--p-fg3); font-weight:700; background:var(--p-surface2); white-space:nowrap; }
+tr:last-child td{ border-bottom:0; }
+td.k,td.m{ font-family:var(--p-mono); font-size:11.5px; white-space:nowrap; }
+td.m{ color:var(--p-fg2); }
+td.n{ font-variant-numeric:tabular-nums; white-space:nowrap; }
+.sw{ display:inline-block; width:11px; height:11px; border-radius:3px; margin-right:6px; vertical-align:-1px; box-shadow:0 0 0 1px var(--p-line); }
+.gid{ font-family:var(--p-mono); font-weight:700; color:var(--p-accent); white-space:nowrap; }
+.glist{ list-style:none; margin:0; padding:0; display:grid; gap:1px; background:var(--p-line); border:1px solid var(--p-line); border-radius:9px; overflow:hidden; }
+.glist li{ background:var(--p-surface); padding:9px 12px; display:grid; grid-template-columns:50px 1fr; gap:10px; font-size:12.5px; }
+.glist li.hit{ background:var(--p-accent-sub); }
+.glist .q{ color:var(--p-fg2); }
+.glist .q b{ color:var(--p-fg); font-weight:600; }
+.note{ font-size:12.5px; color:var(--p-fg2); line-height:1.6; max-width:72ch; }
+.note code{ font-family:var(--p-mono); font-size:11.5px; background:var(--p-surface2); padding:1px 5px; border-radius:4px; }
+.warn{ border-left:3px solid var(--p-accent); padding:10px 0 10px 13px; }
+
+@media (prefers-reduced-motion: reduce){ *{ transition:none !important; animation:none !important; } }
+@media (max-width:620px){
+  .harness{ gap:8px; }
+  .hscale{ margin-left:0; }
+}
+</style>
+
+<div class="page">
+
+  <!-- ══════════ review harness — not part of the app ══════════ -->
+  <div class="harness">
+    <span class="harness-tag">Review harness</span>
+
+    <span class="hlabel">View</span>
+    <div class="hgroup" id="g-view">
+      <button data-v="shell" aria-pressed="true">Shell</button>
+      <button data-v="welcome" aria-pressed="false">Welcome</button>
+      <button data-v="palette" aria-pressed="false">Palette</button>
+      <button data-v="running" aria-pressed="false">Running</button>
+      <button data-v="undo" aria-pressed="false">Undo</button>
+    </div>
+
+    <span class="hlabel">Theme</span>
+    <div class="hgroup" id="g-app">
+      <button data-a="dark" aria-pressed="true">Dark</button>
+      <button data-a="light" aria-pressed="false">Light</button>
+    </div>
+
+    <span class="hlabel">Mica</span>
+    <div class="hgroup" id="g-mica">
+      <button data-m="on" aria-pressed="true">On</button>
+      <button data-m="off" aria-pressed="false">Off · Win10</button>
+    </div>
+
+    <span class="hlabel">Marks</span>
+    <div class="hgroup" id="g-hs">
+      <button data-h="on" aria-pressed="true">Show</button>
+      <button data-h="off" aria-pressed="false">Hide</button>
+    </div>
+
+    <span class="hscale" id="scale">1280 × 800 @ 100%</span>
+  </div>
+
+  <!-- ══════════ the window ══════════ -->
+  <div class="stagewrap" id="stagewrap">
+    <div class="stage" id="stage">
+      <div class="win" id="win" data-app="dark" data-mica="on" data-hs="on" data-panel="open" data-side="open">
+
+        <!-- caption: drawn by Windows, recoloured (D-014) -->
+        <div class="caption">
+          <div class="cap-title"><span class="cap-mark">W</span>iris.arff — Weka-GUI</div>
+          <div class="cap-btns"><span>&#8212;</span><span>&#9633;</span><span>&#10005;</span></div>
+          <div class="hs" style="left:300px;top:7px" data-tip="G-001 · The caption bar stays native (D-014) and is only recoloured. No custom header until JavaFX 28. Window controls therefore sit above the rail.">01</div>
+        </div>
+
+        <div class="bodyrow">
+
+          <!-- ░░ content ░░ -->
+          <div class="content">
+            <div class="doctabs">
+              <div class="doctab" aria-selected="true">
+                <span class="nm">iris.arff</span>
+                <span class="x"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M1.5 1.5 8.5 8.5M8.5 1.5 1.5 8.5"/></svg></span>
+              </div>
+              <div class="doctab">
+                <span class="nm">diabetes.arff</span>
+                <span class="x"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M1.5 1.5 8.5 8.5M8.5 1.5 1.5 8.5"/></svg></span>
+              </div>
+              <div class="doctab">
+                <span class="dot"></span>
+                <span class="nm">covtype-100k.arff</span>
+                <span class="x"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M1.5 1.5 8.5 8.5M8.5 1.5 1.5 8.5"/></svg></span>
+              </div>
+              <div class="doctabs-sp"></div>
+              <div class="hs" style="left:66px;top:9px" data-tip="G-005 · Document tab = one dataset (D-012). 35px tall, VS Code geometry, 2px accent on the TOP edge, active tab filled with the card token.">05</div>
+              <div class="hs" style="left:252px;top:9px" data-tip="G-006 · Unsaved work shows as a dot that becomes the close X on hover. covtype-100k.arff has an unapplied filter.">06</div>
+            </div>
+
+            <!-- ░ document: the six Weka tasks ░ -->
+            <div class="doc" id="doc-shell">
+              <div class="dochead">
+                <div class="segbar">
+                  <span class="seg" aria-current="true">Preprocess</span>
+                  <span class="seg">Classify</span>
+                  <span class="seg">Cluster</span>
+                  <span class="seg">Associate</span>
+                  <span class="seg">Select attributes</span>
+                  <span class="seg">Visualize</span>
+                </div>
+                <div class="hs" style="left:17px;top:4px" data-tip="G-007 · Explorer's six tasks, Explorer's exact words, inside the dataset's own tab (D-012). A student must find Classify where they expect it.">07</div>
+              </div>
+
+              <div class="toolbar">
+                <span class="btn"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="M1.5 3.5h4l1.2 1.4h5.8v6.6H1.5z"/></svg>Open</span>
+                <span class="btn ghost">Save as…</span>
+                <div class="vdiv"></div>
+                <span class="tb-label">Filter</span>
+                <span class="btn">RemoveUseless <svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M2 4l3 3 3-3"/></svg></span>
+                <span class="optfield">-M 99.0</span>
+                <span class="btn accent" id="btn-apply">Apply</span>
+                <span class="btn" id="btn-stop" aria-disabled="true"><svg viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3.4" y="3.4" width="6.2" height="6.2" rx="1.2"/></svg>Stop</span>
+                <div class="hs" style="left:398px;top:11px" data-tip="G-013 · Apply and Stop are a pair in the toolbar and swap state: idle = Apply accent, Stop grey; running = Apply grey, Stop accent. Switch the harness to Running. The status bar reports progress but no longer carries the control.">13</div>
+                <div class="tb-sp"></div>
+                <span class="btn ghost"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M5 3 2 6l3 3"/><path d="M2 6h6.5a3 3 0 0 1 0 6H6"/></svg>Undo</span>
+                <div class="hs l" style="right:16px;top:11px" data-tip="G-008 · The filter row is the options editor in miniature: scheme button + live option string + Apply. S02 replaces the string field with the generated form; the string stays visible and editable.">08</div>
+              </div>
+
+              <div class="pbody">
+                <div class="card">
+                  <div class="card-head">
+                    Attributes <span class="sub">5 of 5</span>
+                    <span class="sp"></span>
+                    <span class="btn ghost" style="height:24px;font-size:12px">All</span>
+                    <span class="btn ghost" style="height:24px;font-size:12px">None</span>
+                    <span class="btn ghost" style="height:24px;font-size:12px">Pattern…</span>
+                  </div>
+                  <div class="card-body">
+                    <div class="attrow"><span class="ck" data-on="1"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M1.5 5.2 4 7.6 8.5 2.6"/></svg></span><span class="no">1</span><span>sepallength</span><span class="ty">Numeric</span></div>
+                    <div class="attrow"><span class="ck" data-on="1"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M1.5 5.2 4 7.6 8.5 2.6"/></svg></span><span class="no">2</span><span>sepalwidth</span><span class="ty">Numeric</span></div>
+                    <div class="attrow"><span class="ck" data-on="1"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M1.5 5.2 4 7.6 8.5 2.6"/></svg></span><span class="no">3</span><span>petallength</span><span class="ty">Numeric</span></div>
+                    <div class="attrow" aria-selected="true"><span class="ck" data-on="1"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M1.5 5.2 4 7.6 8.5 2.6"/></svg></span><span class="no">4</span><span>petalwidth</span><span class="ty">Numeric</span></div>
+                    <div class="attrow"><span class="ck" data-on="1"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M1.5 5.2 4 7.6 8.5 2.6"/></svg></span><span class="no">5</span><span>class</span><span class="ty">Nominal · 3</span></div>
+                  </div>
+                </div>
+
+                <div class="card">
+                  <div class="card-head">petalwidth <span class="sub">· Numeric · 0 missing · 22 distinct</span></div>
+                  <div class="card-body">
+                    <div class="statgrid">
+                      <div class="stat"><div class="k">Minimum</div><div class="v">0.1</div></div>
+                      <div class="stat"><div class="k">Maximum</div><div class="v">2.5</div></div>
+                      <div class="stat"><div class="k">Mean</div><div class="v">1.199</div></div>
+                      <div class="stat"><div class="k">StdDev</div><div class="v">0.763</div></div>
+                    </div>
+                    <div class="histwrap">
+                      <div class="hist" id="hist"></div>
+                      <div class="hax"><span>0.1</span><span>1.3</span><span>2.5</span></div>
+                      <div class="legend">
+                        <span><i style="background:var(--cls1)"></i>Iris-setosa <span class="nums" style="color:var(--fg3)">50</span></span>
+                        <span><i style="background:var(--cls2)"></i>Iris-versicolor <span class="nums" style="color:var(--fg3)">50</span></span>
+                        <span><i style="background:var(--cls3)"></i>Iris-virginica <span class="nums" style="color:var(--fg3)">50</span></span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="hs" style="left:22px;top:118px" data-tip="G-009 · Attributes are ROWS, never one TableView column each. PLAN's known risk: JavaFX TableView breaks on column count — unusable past ~500. A 2,000-attribute ARFF scrolls here untouched.">09</div>
+                <div class="hs l" style="right:28px;top:20px" data-tip="G-018 · Accent is reserved for selection, focus and the one primary action per surface. Data colour is a separate categorical ramp (cls1-3) and never borrows the accent.">18</div>
+              </div>
+            </div>
+
+            <!-- ░ welcome: nothing open ░ -->
+            <div class="doc" id="doc-welcome" hidden style="grid-template-rows:1fr">
+              <div class="welcome">
+                <h1>No dataset open</h1>
+                <p>Open an ARFF, CSV or C4.5 file to start. Several datasets can be open at once, each in its own tab.</p>
+                <div class="wrow">
+                  <span class="btn accent">Open dataset…</span>
+                  <span class="btn">Load a sample</span>
+                  <span class="btn ghost">Generate…</span>
+                </div>
+                <div class="keyhint">
+                  <div><span class="kbd">Ctrl</span> <span class="kbd">O</span> &nbsp;open &nbsp;·&nbsp; <span class="kbd">Ctrl</span> <span class="kbd">Shift</span> <span class="kbd">P</span> &nbsp;all commands</div>
+                  <div style="color:var(--fg-dis)">Recent: iris.arff · diabetes.arff · segment-challenge.arff</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ░░ side panel ░░ -->
+          <div class="side">
+            <div class="side-head">
+              Datasets
+              <span class="sp"></span>
+              <span class="iconbtn"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M7 2.5v9M2.5 7h9"/></svg></span>
+              <span class="iconbtn"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M2 3.5h10M4 7h6M5.5 10.5h3"/></svg></span>
+              <span class="iconbtn"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M2 4h10M2 7h10M2 10h10"/></svg></span>
+            </div>
+            <div class="side-body">
+              <div class="grouphead"><svg viewBox="0 0 10 10" width="10" height="10" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M3 1.5 6.5 5 3 8.5" transform="rotate(90 5 5)"/></svg><b>OPEN</b><span class="n">3</span></div>
+              <div class="treerow" aria-selected="true">
+                <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.3"><ellipse cx="7" cy="3.6" rx="4.2" ry="1.7"/><path d="M2.8 3.6v6.8c0 .94 1.88 1.7 4.2 1.7s4.2-.76 4.2-1.7V3.6"/><path d="M2.8 7c0 .94 1.88 1.7 4.2 1.7S11.2 7.94 11.2 7"/></svg>
+                <span class="nm">iris.arff</span><span class="meta">150 × 5</span>
+              </div>
+              <div class="treerow">
+                <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.3"><ellipse cx="7" cy="3.6" rx="4.2" ry="1.7"/><path d="M2.8 3.6v6.8c0 .94 1.88 1.7 4.2 1.7s4.2-.76 4.2-1.7V3.6"/><path d="M2.8 7c0 .94 1.88 1.7 4.2 1.7S11.2 7.94 11.2 7"/></svg>
+                <span class="nm">diabetes.arff</span><span class="meta">768 × 9</span>
+              </div>
+              <div class="treerow">
+                <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.3"><ellipse cx="7" cy="3.6" rx="4.2" ry="1.7"/><path d="M2.8 3.6v6.8c0 .94 1.88 1.7 4.2 1.7s4.2-.76 4.2-1.7V3.6"/><path d="M2.8 7c0 .94 1.88 1.7 4.2 1.7S11.2 7.94 11.2 7"/></svg>
+                <span class="nm">covtype-100k.arff</span><span class="meta">100k × 55</span>
+              </div>
+
+              <div class="grouphead" style="margin-top:6px"><svg viewBox="0 0 10 10" width="10" height="10" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M3 1.5 6.5 5 3 8.5" transform="rotate(90 5 5)"/></svg><b>RECENT</b><span class="n">6</span></div>
+              <div class="treerow"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M3 1.8h5l3 3v7.4H3z"/><path d="M8 1.8v3h3"/></svg><span class="nm">segment-challenge.arff</span></div>
+              <div class="treerow"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M3 1.8h5l3 3v7.4H3z"/><path d="M8 1.8v3h3"/></svg><span class="nm">weather.nominal.arff</span></div>
+              <div class="treerow"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M3 1.8h5l3 3v7.4H3z"/><path d="M8 1.8v3h3"/></svg><span class="nm">credit-g.arff</span></div>
+
+              <div class="hs" style="left:8px;top:4px" data-tip="G-004 · 260px side panel, right-hand side, serving whichever rail mode is active. Header is a 34px uppercase caption row with the mode's own actions — no window-level chrome in here.">04</div>
+            </div>
+          </div>
+
+          <!-- ░░ rail — RIGHT edge by default (D-013) ░░ -->
+          <div class="rail">
+            <div class="railbtn" aria-current="true" title="Datasets">
+              <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+                <ellipse cx="10" cy="5" rx="6" ry="2.4"/><path d="M4 5v10c0 1.33 2.69 2.4 6 2.4s6-1.07 6-2.4V5"/><path d="M4 10c0 1.33 2.69 2.4 6 2.4s6-1.07 6-2.4"/>
+              </svg>
+            </div>
+            <div class="railbtn" title="Search">
+              <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="8.8" cy="8.8" r="5.4"/><path d="M12.8 12.8 17 17"/>
+              </svg>
+            </div>
+            <div class="railbtn" title="Runs">
+              <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="10" cy="10" r="6.6"/><path d="M10 6.1V10l2.9 1.8"/>
+              </svg>
+            </div>
+            <div class="railbtn" title="Packages">
+              <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M10 2.6 17 6.3v7.4L10 17.4 3 13.7V6.3z"/><path d="M3 6.3 10 10l7-3.7M10 10v7.4"/>
+              </svg>
+            </div>
+            <div class="rail-sp"></div>
+            <div class="railbtn" title="Settings">
+              <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M8.4 2.6h3.2l.35 1.9 1.5.87 1.8-.7 1.6 2.77-1.45 1.26v1.74l1.45 1.26-1.6 2.77-1.8-.7-1.5.87-.35 1.9H8.4l-.35-1.9-1.5-.87-1.8.7-1.6-2.77 1.45-1.26V9.3L3.15 8.04l1.6-2.77 1.8.7 1.5-.87z"/>
+                <circle cx="10" cy="10" r="2.3"/>
+              </svg>
+            </div>
+            <div class="hs l" style="right:52px;top:14px" data-tip="G-002 · Rail = APP MODES only (Datasets / Runs / Packages, Settings pinned), never the Weka tasks (D-012). 48px wide, on the RIGHT by default to match the user's own VS Code (D-013). Swappable in Settings.">02</div>
+            <div class="hs l" style="right:52px;top:62px" data-tip="G-003 · The active-mode indicator is a 2px bar on the rail's INNER edge, facing the panel it owns. Alternative: outer edge, like VS Code's left-hand rail.">03</div>
+          </div>
+        </div>
+
+        <!-- ░░ bottom panel — output providers (D-017) ░░ -->
+        <div class="panel">
+          <div class="panel-tabs">
+            <span class="ptab" aria-current="true">Weka Output</span>
+            <span class="ptab">Terminal</span>
+            <span class="ptab">Package Log</span>
+            <span class="ptab">Problems <span class="badge">2</span></span>
+            <div class="panel-sp"></div>
+            <span class="iconbtn" title="Save output"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M7 2v7M4.2 6.4 7 9.2l2.8-2.8M2.6 11.6h8.8"/></svg></span>
+            <span class="iconbtn" title="Find"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><circle cx="6.2" cy="6.2" r="3.9"/><path d="M9.2 9.2l2.6 2.6"/></svg></span>
+            <span class="iconbtn" title="Clear"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M2.6 4.2h8.8M5.4 4.2V2.6h3.2v1.6M4 4.2l.6 7.2h4.8l.6-7.2"/></svg></span>
+            <span class="iconbtn" title="Maximize panel"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M4 8.2 7 5.2l3 3"/></svg></span>
+            <span class="iconbtn" title="Close panel"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M3.4 3.4 10.6 10.6M10.6 3.4 3.4 10.6"/></svg></span>
+            <div class="hs" style="left:10px;top:7px" data-tip="G-010 · Four providers: Weka Output, Terminal, Package Log, Problems. Terminal ships as a plain console — run, watch, search, copy, kill — and becomes a real VT emulator later, which is exactly the swap D-017 designed the panel to allow.">10</div>
+          </div>
+          <div class="hs" style="left:430px;top:9px" data-tip="G-011 · Every result screen can also emit Weka's original monospace text verbatim — a PLAN success test. This pane is where it lands, in Cascadia Mono, unreformatted, copy-exact.">11</div>
+          <div class="out" id="out-idle"><b>=== Run information ===</b>
+
+Scheme:       <u>weka.classifiers.trees.J48 -C 0.25 -M 2</u>
+Relation:     iris
+Instances:    150
+Attributes:   5
+Test mode:    10-fold cross-validation
+
+<b>=== Classifier model (full training set) ===</b>
+
+J48 pruned tree
+------------------
+
+petalwidth &lt;= 0.6: Iris-setosa (50.0)
+petalwidth &gt; 0.6
+|   petalwidth &lt;= 1.7
+|   |   petallength &lt;= 4.9: Iris-versicolor (48.0/1.0)
+|   |   petallength &gt; 4.9
+|   |   |   petalwidth &lt;= 1.5: Iris-virginica (3.0)</div>
+          <div class="out" id="out-run" hidden><b>=== Run information ===</b>
+
+Scheme:       <u>weka.classifiers.trees.J48 -C 0.25 -M 2</u>
+Relation:     iris-weka.filters.unsupervised.attribute.RemoveUseless-M99.0
+Instances:    150
+Test mode:    10-fold cross-validation
+
+[engine] subprocess pid 24118 · heap 512m · started 00:00:04 ago
+[fold 1/10] correct 14/15   [fold 2/10] correct 15/15
+[fold 3/10] correct 13/15   [fold 4/10] correct 15/15
+[fold 5/10] correct 14/15   [fold 6/10] running…</div>
+        </div>
+
+        <!-- ░░ status bar ░░ -->
+        <div class="status" id="status-idle">
+          <span class="sitem" title="Engine">
+            <svg viewBox="0 0 12 12" fill="currentColor"><path d="M6.6 1 2.4 6.6h2.3L5 11l4.3-5.8H6.9z"/></svg>In-process
+          </span>
+          <span class="sitem">Ready</span>
+          <div class="status-sp"></div>
+          <span class="sitem nums">150 instances</span>
+          <span class="sitem nums">5 attributes</span>
+          <span class="sitem">Heap <span class="meter"><i style="width:36%"></i></span><span class="nums">184 / 512 MB</span></span>
+          <span class="sitem">Weka 3.8.7</span>
+          <div class="hs l" style="right:270px;top:-24px" data-tip="G-012 · 22px status bar tinted with accent-subtle. Left = what the app is doing; right = what the dataset IS, plus the heap meter, because an in-process OOM takes the UI with it (PLAN known risk).">12</div>
+        </div>
+
+        <div class="status" id="status-run" hidden>
+          <span class="sitem run">
+            <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="6" cy="6" r="4.4" stroke-dasharray="6 3"/></svg>
+            Cross-validating J48 — fold 6 of 10
+          </span>
+          <span class="sitem" style="color:var(--fg3)">
+            <svg viewBox="0 0 12 12" fill="currentColor"><path d="M6.6 1 2.4 6.6h2.3L5 11l4.3-5.8H6.9z"/></svg>Subprocess · pid 24118
+          </span>
+          <div class="status-sp"></div>
+          <span class="sitem nums">elapsed 0:04</span>
+          <span class="sitem">Heap <span class="meter"><i style="width:64%"></i></span><span class="nums">328 / 512 MB</span></span>
+          <span class="sitem">Weka 3.8.7</span>
+        </div>
+
+        <div class="progline" id="progline" hidden><i></i></div>
+
+        <!-- ░░ command palette ░░ -->
+        <div id="pal-layer" hidden>
+          <div class="scrim"></div>
+          <div class="palette">
+            <div class="pal-input">
+              <svg viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M3 5l3 2.5L3 10"/><path d="M8 10.5h4"/></svg>
+              <span>classify</span><span class="caret"></span>
+            </div>
+            <div class="palrow" aria-selected="true">
+              <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M4 2.5 11 7l-7 4.5z"/></svg>
+              <span class="grp">Classify:</span><span>Run J48 on iris.arff</span><span class="sp"></span><span class="kbd">Ctrl+R</span>
+            </div>
+            <div class="palrow"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M2.5 3.5h9M4.5 7h5M6 10.5h2"/></svg><span class="grp">Classify:</span><span>Choose classifier…</span></div>
+            <div class="palrow"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M7 2.5v9M2.5 7h9"/></svg><span class="grp">Classify:</span><span>Set test options…</span></div>
+            <div class="palrow"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><circle cx="7" cy="7" r="4.6"/><path d="M7 4.4V7l1.9 1.2"/></svg><span class="grp">Runs:</span><span>Compare last two classifier runs</span></div>
+            <div class="palrow"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M2.5 11.5 11.5 2.5M11.5 2.5v4M11.5 2.5h-4"/></svg><span class="grp">Keymap:</span><span>Remove binding Ctrl+R</span></div>
+            <div class="pal-foot"><span><span class="kbd">↑↓</span> navigate</span><span><span class="kbd">Enter</span> run</span><span><span class="kbd">Esc</span> dismiss</span></div>
+            <div class="hs l" style="right:-26px;top:0" data-tip="G-014 · 600px flyout, 76px from the top, acrylic over a 30% scrim. Rows read 'Group: action'. A Keymap row that REMOVES a binding is in here on purpose — PLAN demands a keymap that can delete a default, not only add one.">14</div>
+          </div>
+        </div>
+
+        <!-- ░░ undo toast ░░ -->
+        <div class="toast" id="toast" hidden>
+          <span>Applied <b>RemoveUseless</b> — 2 attributes removed</span>
+          <span class="btn">Undo</span>
+          <span class="iconbtn"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M3.4 3.4 10.6 10.6M10.6 3.4 3.4 10.6"/></svg></span>
+          <div class="hs" style="left:-26px;top:0" data-tip="G-015 · Nothing in this app asks 'are you sure?' (PLAN success test). A destructive action happens, says what it did, and offers Undo. This replaces every confirmation dialog.">15</div>
+        </div>
+
+        <!-- window-level hotspots -->
+        <div class="hs" style="left:22px;top:398px" data-tip="G-016 · Switch Mica to Off in the harness: the shell must still look finished, because Windows 10 has no Mica and no rounded corners (S06 exit test). Opaque base, square corners, a visible 1px frame.">16</div>
+        <div class="hs" style="left:22px;top:430px" data-tip="G-017 · Two radii only: 4px on controls, 8px on cards, flyouts and the window itself. Nothing else gets a radius.">17</div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════ spec ══════════ -->
+  <div class="spec">
+
+    <section>
+      <h2>Graded — <em>all 18 marks, W1 closed 2026-10-07</em></h2>
+      <p class="note">Every mark below is settled and locked. The window above already shows the graded design, not the version that was proposed. A later session may not overwrite one of these; it supersedes it with a reason, the same rule <code>DECISIONS.md</code> runs on. The record also lives in <code>memory/DESIGN.md §Ledger</code>.</p>
+      <div class="tablewrap" style="margin-bottom:14px">
+        <table>
+          <thead><tr><th>Mark</th><th>Verdict</th><th>Changed from what was proposed</th></tr></thead>
+          <tbody>
+            <tr><td class="gid">G-002</td><td><b>Search added</b></td><td class="m">rail is Datasets · Search · Runs · Packages, Settings pinned</td></tr>
+            <tr><td class="gid">G-010</td><td><b>Terminal added</b></td><td class="m">four providers; plain console in v1, VT emulator later</td></tr>
+            <tr><td class="gid">G-013</td><td><b>Replaced outright</b></td><td class="m">Apply + Stop pair in the toolbar, swapping state; status bar reports only</td></tr>
+            <tr><td class="gid">G-016</td><td><b>Contrast raised</b></td><td class="m">solid Layer fills when Mica is off, not the translucent ones</td></tr>
+            <tr><td class="gid">G-003</td><td>inner edge</td><td class="m">as proposed</td></tr>
+            <tr><td class="gid">G-005 · G-006</td><td>accent on top · dot</td><td class="m">as proposed</td></tr>
+            <tr><td class="gid">G-007</td><td>six full labels</td><td class="m">as proposed — Explorer's words stay, the bar scrolls</td></tr>
+            <tr><td class="gid">G-008</td><td>option string always visible</td><td class="m">as proposed</td></tr>
+            <tr><td class="gid">G-012</td><td>accent-subtle tint</td><td class="m">as proposed</td></tr>
+            <tr><td class="gid">G-015</td><td>toast, bottom right</td><td class="m">as proposed</td></tr>
+            <tr><td class="gid">G-017</td><td>4px / 8px</td><td class="m">as proposed</td></tr>
+            <tr><td class="gid">G-004 · G-009</td><td>260px · 26px rows</td><td class="m">as proposed</td></tr>
+            <tr><td class="gid">G-001 · G-011 · G-014 · G-018</td><td>accepted</td><td class="m">as proposed</td></tr>
+            <tr><td class="gid">theme</td><td>follows Windows</td><td class="m">auto on first run; light and dark both shipped</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <ul class="glist">
+        <li><span class="gid">G-001</span><span class="q"><b>Native caption bar.</b> Kept and only recoloured, so window controls sit above the rail. The alternative forfeits Mica entirely until JavaFX 28.</span></li>
+        <li><span class="gid">G-002</span><span class="q"><b>Rail on the right, 48px, app modes only.</b> Datasets / Search / Runs / Packages, Settings pinned at the bottom. No Weka task is ever on the rail.</span></li>
+        <li><span class="gid">G-003</span><span class="q"><b>Active-mode indicator on the rail's inner edge.</b> 2px accent bar facing the panel. VS Code puts it on the outer edge.</span></li>
+        <li><span class="gid">G-004</span><span class="q"><b>Side panel 260px</b> with a 34px uppercase header carrying that mode's own actions.</span></li>
+        <li><span class="gid">G-005</span><span class="q"><b>Document tabs 35px</b>, one dataset each, 2px accent on the top edge, active tab filled.</span></li>
+        <li><span class="gid">G-006</span><span class="q"><b>Unsaved state is a dot</b> that turns into the close X on hover.</span></li>
+        <li><span class="gid">G-007</span><span class="q"><b>Segmented bar inside the tab</b>, six segments, Explorer's exact words. Does <em>Select attributes</em> at this width read right, or does it need shortening?</span></li>
+        <li><span class="gid">G-008</span><span class="q"><b>Scheme button + live option string + Apply.</b> The option string stays visible even after S02 generates the real form.</span></li>
+        <li><span class="gid">G-009</span><span class="q"><b>Attributes are rows, not columns.</b> The only shape that survives a 2,000-attribute ARFF.</span></li>
+        <li><span class="gid">G-010</span><span class="q"><b>Bottom panel = four providers</b> — Weka Output, Terminal, Package Log, Problems — plus a toolbar of save / find / clear / maximize / close.</span></li>
+        <li><span class="gid">G-011</span><span class="q"><b>Weka's verbatim text</b> in Cascadia Mono, 12px / 1.55, unreformatted.</span></li>
+        <li><span class="gid">G-012</span><span class="q"><b>Status bar 22px, accent-tinted.</b> State on the left, dataset facts and the heap meter on the right.</span></li>
+        <li><span class="gid">G-013</span><span class="q"><b>Apply and Stop are a toolbar pair that swaps state.</b> Idle: Apply accent, Stop grey. Running: Apply grey, Stop accent. One fixed position, so the control never moves or appears. Switch the harness to <em>Running</em>.</span></li>
+        <li><span class="gid">G-014</span><span class="q"><b>Command palette 600px</b>, 76px from the top, rows reading <em>Group: action</em>.</span></li>
+        <li><span class="gid">G-015</span><span class="q"><b>Undo toast instead of a confirmation.</b> Switch the harness to <em>Undo</em>.</span></li>
+        <li><span class="gid">G-016</span><span class="q"><b>Mica off swaps to solid Layer fills.</b> Cards go from 5% to 9.8% in dark and to #FAFAFA in light, dividers strengthen. Switch the harness to <em>Off · Win10</em> — it has to look finished, not like a fallback.</span></li>
+        <li><span class="gid">G-017</span><span class="q"><b>Two radii only</b> — 4px controls, 8px cards and flyouts.</span></li>
+        <li><span class="gid">G-018</span><span class="q"><b>Accent is reserved</b> for selection, focus and one primary action per surface. Data colour is a separate ramp.</span></li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Geometry — <em>the numbers you are grading</em></h2>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Token</th><th>Value</th><th>Applies to</th><th>Why this number</th></tr></thead>
+          <tbody>
+            <tr><td class="k">--h-caption</td><td class="n">32px</td><td>native caption bar</td><td class="m">Windows 11's own height at 100% scale; not ours to change</td></tr>
+            <tr><td class="k">--h-doctab</td><td class="n">35px</td><td>dataset tabs</td><td class="m">VS Code's tab height</td></tr>
+            <tr><td class="k">--h-segbar</td><td class="n">32px</td><td>the six Weka tasks</td><td class="m">Fluent SegmentedControl</td></tr>
+            <tr><td class="k">--h-toolbar</td><td class="n">40px</td><td>per-task action row</td><td class="m">28px controls + 6px above and below</td></tr>
+            <tr><td class="k">--h-statusbar</td><td class="n">22px</td><td>status bar</td><td class="m">VS Code's status bar height</td></tr>
+            <tr><td class="k">--h-panel</td><td class="n">224px</td><td>bottom panel, open</td><td class="m">about 10 lines of 12px/1.55 mono plus its 34px tab strip</td></tr>
+            <tr><td class="k">--h-row</td><td class="n">26px</td><td>attribute and tree rows</td><td class="m">13px text in a 26px row; a 2,000-row attribute list stays scannable</td></tr>
+            <tr><td class="k">--w-rail</td><td class="n">48px</td><td>rail</td><td class="m">Fluent NavigationView compact; 20px icon centred</td></tr>
+            <tr><td class="k">--w-side</td><td class="n">260px</td><td>side panel</td><td class="m">fits <code>covtype-100k.arff</code> plus its <code>100k × 55</code> badge without truncating</td></tr>
+            <tr><td class="k">--r-ctl / --r-card</td><td class="n">4px / 8px</td><td>controls / cards, flyouts, window</td><td class="m">Fluent's only two corner radii</td></tr>
+            <tr><td class="k">--sp</td><td class="n">4px</td><td>all spacing</td><td class="m">every gap and pad is a multiple of 4</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h2>Colour — <em>real Fluent 2 values, both themes</em></h2>
+      <p class="note">The right-hand column is the AtlantaFX / JavaFX name each token is expected to land on at S01. <strong>Unverified</strong> — AtlantaFX 3.0.0 is not on this machine yet, so S01 confirms the names and this table gets corrected, not guessed again.</p>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Token</th><th>Dark</th><th>Light</th><th>Role</th><th>AtlantaFX target (verify S01)</th></tr></thead>
+          <tbody>
+            <tr><td class="k">--mica</td><td class="k"><i class="sw" style="background:#202020"></i>#202020</td><td class="k"><i class="sw" style="background:#F3F3F3"></i>#F3F3F3</td><td>opaque base when Mica is off</td><td class="m">-color-bg-default</td></tr>
+            <tr><td class="k">--card</td><td class="k">#FFF @ 5.1%</td><td class="k">#FFF @ 70%</td><td>cards, active document tab</td><td class="m">-color-bg-subtle</td></tr>
+            <tr><td class="k">--ctl</td><td class="k">#FFF @ 6.1%</td><td class="k">#FFF @ 70%</td><td>buttons, inputs, segment bar</td><td class="m">-color-bg-inset</td></tr>
+            <tr><td class="k">--divider</td><td class="k">#FFF @ 8.4%</td><td class="k">#000 @ 8.0%</td><td>every structural line</td><td class="m">-color-border-muted</td></tr>
+            <tr><td class="k">--stroke-ctl</td><td class="k">#FFF @ 7.0%</td><td class="k">#000 @ 5.8%</td><td>control borders</td><td class="m">-color-border-default</td></tr>
+            <tr><td class="k">--fg1</td><td class="k">#FFFFFF</td><td class="k">#000 @ 89.6%</td><td>primary text</td><td class="m">-color-fg-default</td></tr>
+            <tr><td class="k">--fg2</td><td class="k">#FFF @ 78.6%</td><td class="k">#000 @ 60.6%</td><td>secondary text, icons</td><td class="m">-color-fg-muted</td></tr>
+            <tr><td class="k">--fg3</td><td class="k">#FFF @ 54.4%</td><td class="k">#000 @ 44.6%</td><td>captions, metadata</td><td class="m">-color-fg-subtle</td></tr>
+            <tr><td class="k">--accent</td><td class="k"><i class="sw" style="background:#4CC2FF"></i>#4CC2FF</td><td class="k"><i class="sw" style="background:#005FB8"></i>#005FB8</td><td>selection, focus, primary action</td><td class="m">-color-accent-emphasis</td></tr>
+            <tr><td class="k">--accent-sub</td><td class="k">accent @ 16%</td><td class="k">accent @ 10%</td><td>selected row, status bar tint</td><td class="m">-color-accent-muted</td></tr>
+            <tr><td class="k">--ok / --warn / --bad</td><td class="k"><i class="sw" style="background:#6CCB5F"></i><i class="sw" style="background:#FCE100"></i><i class="sw" style="background:#FF99A4"></i></td><td class="k"><i class="sw" style="background:#0F7B0F"></i><i class="sw" style="background:#9D5D00"></i><i class="sw" style="background:#C42B1C"></i></td><td>semantic state, never the accent</td><td class="m">-color-success/warning/danger-emphasis</td></tr>
+            <tr><td class="k">--cls1-3</td><td class="k"><i class="sw" style="background:#5B8FF9"></i><i class="sw" style="background:#E8684A"></i><i class="sw" style="background:#5AD8A6"></i></td><td class="k"><i class="sw" style="background:#3A6FD8"></i><i class="sw" style="background:#C9502F"></i><i class="sw" style="background:#2E9E74"></i></td><td>class values in plots; a separate ramp</td><td class="m">app-owned, no AtlantaFX equivalent</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h2>Type</h2>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Role</th><th>Face</th><th>Size / weight</th><th>Used for</th></tr></thead>
+          <tbody>
+            <tr><td>Body</td><td class="m">Segoe UI Variable Text</td><td class="n">14 / 400</td><td class="m">controls, menus, default</td></tr>
+            <tr><td>Body small</td><td class="m">Segoe UI Variable Text</td><td class="n">13 / 400</td><td class="m">rows, tabs, dense lists</td></tr>
+            <tr><td>Caption</td><td class="m">Segoe UI Variable Text</td><td class="n">12 / 400</td><td class="m">status bar, metadata</td></tr>
+            <tr><td>Label</td><td class="m">Segoe UI Variable Text</td><td class="n">11 / 600 · .06em caps</td><td class="m">panel and group headers</td></tr>
+            <tr><td>Subtitle</td><td class="m">Segoe UI Variable Display</td><td class="n">20 / 600</td><td class="m">empty states, dialog titles</td></tr>
+            <tr><td>Mono</td><td class="m">Cascadia Mono → Consolas</td><td class="n">12 / 1.55</td><td class="m">Weka output, option strings</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="note" style="margin-top:10px">No webfont. The app renders in the Windows system stack, so the mockup does too — a Google-hosted face here would make this page <em>less</em> faithful, not more.</p>
+    </section>
+
+    <section>
+      <h2>What this page cannot tell you</h2>
+      <div class="note warn">
+        <strong>Mica is approximated</strong> by a CSS blur over a fake wallpaper. Real Mica tints the desktop wallpaper, not a gradient, and whether it runs on the fast painter at all is S00's first exit test.<br>
+        <strong>Fonts render differently in JavaFX.</strong> Browser text shaping is not JavaFX's; expect to retune one or two sizes at S01.<br>
+        <strong>Nothing here is fast or slow.</strong> The 100k-row and 2,000-attribute tests are S00 exit tests on real data, and no HTML page can stand in for them.
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<script>
+(function () {
+  var win = document.getElementById('win');
+
+  /* ---- iris petalwidth, 10 bins, stacked by class. Real counts. ---- */
+  var bins = [
+    [41, 0, 0], [9, 0, 0], [0, 0, 0], [0, 7, 0], [0, 21, 1],
+    [0, 15, 3], [0, 6, 10], [0, 1, 15], [0, 0, 11], [0, 0, 10]
+  ];
+  var max = 0;
+  bins.forEach(function (b) { var s = b[0] + b[1] + b[2]; if (s > max) max = s; });
+  var hist = document.getElementById('hist');
+  bins.forEach(function (b) {
+    var bar = document.createElement('div');
+    bar.className = 'hbar';
+    bar.style.height = Math.max(2, Math.round((b[0] + b[1] + b[2]) / max * 104)) + 'px';
+    b.forEach(function (n, i) {
+      if (!n) return;
+      var seg = document.createElement('i');
+      seg.style.flex = n;
+      seg.style.background = 'var(--cls' + (i + 1) + ')';
+      bar.appendChild(seg);
+    });
+    hist.appendChild(bar);
+  });
+
+  /* ---- views ---- */
+  var VIEWS = {
+    shell:   { doc: 'shell',   panel: 'open',   pal: 0, toast: 0, run: 0 },
+    welcome: { doc: 'welcome', panel: 'closed', pal: 0, toast: 0, run: 0 },
+    palette: { doc: 'shell',   panel: 'open',   pal: 1, toast: 0, run: 0 },
+    running: { doc: 'shell',   panel: 'open',   pal: 0, toast: 0, run: 1 },
+    undo:    { doc: 'shell',   panel: 'open',   pal: 0, toast: 1, run: 0 }
+  };
+  function setView(name) {
+    var v = VIEWS[name] || VIEWS.shell;
+    document.getElementById('doc-shell').hidden   = v.doc !== 'shell';
+    document.getElementById('doc-welcome').hidden = v.doc !== 'welcome';
+    win.setAttribute('data-panel', v.panel);
+    win.setAttribute('data-side', name === 'welcome' ? 'open' : 'open');
+    document.getElementById('pal-layer').hidden = !v.pal;
+    document.getElementById('toast').hidden     = !v.toast;
+    document.getElementById('status-idle').hidden = !!v.run;
+    document.getElementById('status-run').hidden  = !v.run;
+    document.getElementById('progline').hidden    = !v.run;
+    document.getElementById('out-idle').hidden    = !!v.run;
+    document.getElementById('out-run').hidden     = !v.run;
+
+    /* G-013: Apply and Stop swap state rather than appearing and disappearing. */
+    var ap = document.getElementById('btn-apply');
+    var st = document.getElementById('btn-stop');
+    ap.className = v.run ? 'btn' : 'btn accent';
+    ap.setAttribute('aria-disabled', v.run ? 'true' : 'false');
+    st.className = v.run ? 'btn accent' : 'btn';
+    st.setAttribute('aria-disabled', v.run ? 'false' : 'true');
+  }
+
+  function wire(groupId, attr, apply) {
+    var g = document.getElementById(groupId);
+    g.addEventListener('click', function (e) {
+      var b = e.target.closest('button'); if (!b) return;
+      Array.prototype.forEach.call(g.querySelectorAll('button'), function (x) {
+        x.setAttribute('aria-pressed', String(x === b));
+      });
+      apply(b.getAttribute(attr));
+    });
+  }
+  wire('g-view', 'data-v', setView);
+  wire('g-app',  'data-a', function (v) { win.setAttribute('data-app', v); });
+  wire('g-mica', 'data-m', function (v) { win.setAttribute('data-mica', v); });
+  wire('g-hs',   'data-h', function (v) { win.setAttribute('data-hs', v); });
+
+  /* ---- scale 1280x800 to fit ---- */
+  var stage = document.getElementById('stage');
+  var wrap = document.getElementById('stagewrap');
+  var label = document.getElementById('scale');
+  function fit() {
+    var avail = wrap.clientWidth || wrap.getBoundingClientRect().width;
+    if (!avail) return;
+    var s = Math.min(1, avail / 1280);
+    stage.style.transform = 'scale(' + s + ')';
+    wrap.style.height = Math.round(800 * s) + 'px';
+    label.textContent = '1280 × 800 @ ' + Math.round(s * 100) + '%';
+  }
+  fit();
+  if (window.ResizeObserver) new ResizeObserver(fit).observe(wrap.parentNode);
+  window.addEventListener('resize', fit);
+
+  /* ---- clicking a mark highlights its row in the grading list ---- */
+  document.addEventListener('click', function (e) {
+    var hs = e.target.closest('.hs'); if (!hs) return;
+    var id = (hs.getAttribute('data-tip') || '').slice(0, 5);
+    Array.prototype.forEach.call(document.querySelectorAll('.glist li'), function (li) {
+      var on = li.querySelector('.gid').textContent === id;
+      li.classList.toggle('hit', on);
+      if (on) li.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    });
+  });
+
+  /* ---- app theme follows the page theme on first load ---- */
+  try {
+    var dark = document.documentElement.getAttribute('data-theme') === 'dark' ||
+      (!document.documentElement.getAttribute('data-theme') &&
+        window.matchMedia('(prefers-color-scheme: dark)').matches);
+    if (!dark) {
+      win.setAttribute('data-app', 'light');
+      var g = document.getElementById('g-app');
+      g.querySelector('[data-a="dark"]').setAttribute('aria-pressed', 'false');
+      g.querySelector('[data-a="light"]').setAttribute('aria-pressed', 'true');
+    }
+  } catch (err) { /* theme detection is a convenience */ }
+})();
+</script>

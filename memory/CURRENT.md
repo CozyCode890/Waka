@@ -36,4 +36,5 @@ HARD RULE : /stage archives this file to memory/done/ BEFORE regenerating it, an
 ## Open questions
 <!-- Every line here must be counted in CLAUDE.md §STATE `ASK:`.
      /stage carries unanswered lines forward instead of archiving them away.
-     Put a question here and keep working; do not stall the session waiting for an answer. -->
+     This is a batching queue, not a parking lot: per CLAUDE.md §RULES 5 each line must be
+     asked as a multiple-choice question in-session, and `ASK:` must reach 0 before /wrap. -->

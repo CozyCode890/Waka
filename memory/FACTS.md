@@ -44,7 +44,29 @@ file name — so a later session can grep for that name and actually find this l
 [gotcha] weka.Run prints a numbered menu and blocks on stdin for an ambiguous scheme name — always pass the fully-qualified class name from our side — 2026-10-06
 [proj] weka-stable marks commons-compress optional so it is not inherited transitively; declare it explicitly or .arff.gz and .arff.bz2 loading fails at runtime — 2026-10-06
 [proj] weka-stable 3.8.7 already depends on com.formdev:flatlaf:3.7.1 at runtime, so "Weka's GUI looks old" is no longer an accurate pitch — 2026-10-06
+[pref] Abstract UI vocabulary does not land — "accent", "toast", "option string", "indicator edge" each had to be redrawn as an ASCII diagram before the user could answer. Draw the thing, then ask — 2026-10-07
+[proj] UI is graded before it is built: mockups in design\*.html, verdicts frozen in memory\DESIGN.md. W1 (shell) closed 2026-10-07; W2 is the options dialog at S02 kickoff — 2026-10-07
+[gotcha] Nothing validates a memory write — the SessionStart hook only prints §STATE. Two parallel sessions can both rewrite §STATE, and /wrap step 1 (`git status --short memory/`) is the only detector — 2026-10-06
+[gotcha] A session that dies without /wrap loses its SESSION.md block entirely; only what it wrote to PLAN/DECISIONS/FACTS as it went survives — tick CURRENT.md continuously, never in a batch at the end — 2026-10-06
+[proj] memory\SOURCE.md is almost empty on purpose — it is a guess until src\ exists, and CLAUDE.md §RULES 8 folds it into CURRENT.md if no row ever reads it for real — 2026-10-06
+[proj] App name is Waka — display name `Waka`, Maven artifactId `waka`, install dir `Waka`, GitHub repo `Waka`; the working copy stays D:\Weka-GUI (D-025) — 2026-10-07
+[pref] All code is English — identifiers, comments, file and directory names, assets, config keys, console output — in plain words a student knows, no clipped abbreviations (D-023) — 2026-10-07
+[pref] Code is written to be re-read, checked and inherited: where two forms do the same job, the clearer one wins over the shorter one (D-023) — 2026-10-07
+[proj] Every UI string goes through a language pack from the first screen; English is the only pack in v1, Vietnamese is a separate later project (D-024) — 2026-10-07
+[proj] No modal dialogs — the options editor and decision-tree views are reparentable hosted panels with close / pop-out / open-as-tab on their header (D-027) — 2026-10-07
+[proj] The About screen carries the Weka attribution and the GPLv3 notice, so it is a licence obligation and not decoration (D-026) — 2026-10-07
+[proj] The About music player needs javafx.media in the jlink image; audio is never committed — assets\audio\ ships empty with a README (D-026) — 2026-10-07
+[proj] S00 is a risk spike the user added ahead of the shell; folding its three checks into S01's exit tests was offered and refused — they must be proven before anything rests on them — 2026-10-06
+[proj] The jpackage app-image rehearsal sits in S01, not S06, so "it only runs from the IDE" is never true for long — 2026-10-06
+[proj] S03 is deliberately not split despite carrying four proofs — one vertical slice must prove the engine split, run model, cancel and history at once — 2026-10-06
 
 ## §Promoted
+2026-10-07 — promoted from s01 before dropping it: the three "known holes" lines became the two
+`[gotcha]` lines and the `[proj]` SOURCE.md line above. Everything else in that block (the
+parallel-design method, the critic's cut list, the eight settled questions) is already in
+DECISIONS.md D-001..D-008 and was not duplicated.
+2026-10-07 — promoted from s02 before dropping it: the three `[proj]` lines about why S00 is a
+spike, why the jpackage rehearsal sits in S01, and why S03 stays unsplit. The rest of that block
+was bookkeeping (a commit hash, a FACTS line already fixed) or already in DECISIONS.md D-020.
 <!-- /wrap lists here which SESSION.md lines became facts, so nothing is dropped silently.
      Shape: 2026-10-06 — promoted from s01: [env] ..., [proj] ... -->

@@ -16,6 +16,7 @@ skin, so "the same thing but prettier" is NOT the pitch and must never become it
 the Explorer does badly are the whole reason this exists: the GenericObjectEditor dialog, a run
 that cannot be cancelled, a result history that dies with the process, and one dataset at a
 time. The analysis itself stays Weka's — this project never reimplements an algorithm.
+The app ships as **Waka** — a name that says what it is a front end for without claiming to be it.
 
 ## In scope
 - A VS Code shell: vertical icon rail, document tabs, a bottom panel, a status bar, a command
@@ -26,13 +27,18 @@ time. The analysis itself stays Weka's — this project never reimplements an al
   with a hand-written override table for the schemes people actually touch.
 - A package manager over `WekaPackageManager`: version pinning, dependency preview, and a
   three-state model (installed / installed-but-not-loaded / available).
-- A bottom panel of output providers — Weka Output, Package Log, Problems — one of which later
-  becomes a real terminal.
+- A bottom panel of output providers — Weka Output, Terminal, Package Log, Problems. Terminal
+  ships as a plain console in v1 and becomes a real VT emulator later.
 - Run history that survives a restart, keyed by option string plus dataset fingerprint, with
   runs comparable side by side.
 - Every result screen can also render Weka's original monospace text verbatim.
 - Windows 11 Mica, with an opaque theme that looks finished on its own.
 - An installer that bundles its own JRE, needs no admin rights, and runs on Windows 10.
+- Every UI string comes from a language pack. v1 ships one pack, English; the mechanism is
+  there from the first screen, so a second language is a file to fill, not a refactor.
+- An About screen that credits Weka upstream — Waikato's Machine Learning Group, the authors,
+  the distributor, the exact linked version — carries the GPLv3 notice, and plays "Waka Waka"
+  from an audio file the user supplies. Nothing copyrighted is ever committed or shipped.
 
 ## NON-goals
 Each line here is a request a future session must refuse.
@@ -44,17 +50,25 @@ Each line here is a request a future session must refuse.
 - macOS and Linux builds. Windows x64 only; ARM64 is a later question.
 - A custom-drawn title bar, until JavaFX 28 lets it coexist with Mica.
 - Theming beyond one user accent plus light/dark/auto.
+- A second language pack in v1. Vietnamese is its own project, after this one ships.
 - A self-hosted package mirror. The design is known and recorded; building it is not v1.
 - Auto-update beyond check-the-GitHub-release, notify, hand off to the installer.
 - Any closed-source or proprietary licensing. That door is shut by linking Weka.
 - Chasing pixel-identical Fluent. Geometry and material, not a WinUI 3 clone.
+
+## Later — only if v1 ships
+Recorded so a future session reads these as wanted, not as scope creep. None of them is v1.
+- Publish to winget, once the Inno Setup installer is proven in the wild.
+- Classify and Cluster gain repeated random resampling: choose how many splits, sweep a
+  sequence of seeds, and plot the distribution of results instead of reporting one number.
+- A `settings.json` the user can edit by hand, VS Code style, beside the settings UI.
 
 ## Stack
 - **Java 25 LTS** (Temurin), bundled with the app. The machine currently has 21.
 - **JavaFX 27 + AtlantaFX 3.0.0.** Deliberately not JavaFX 25 LTS: 27 carries the D3D9
   swap-chain alpha fix that makes Mica free, the large-table selection/sort fixes, and
   `ConditionalFeature.EXTENDED_WINDOW`. JavaFX is a dependency, not a platform — moving to 28
-  is a coordinate bump. The JDK stays on an LTS.
+  is a coordinate bump. The JDK stays on an LTS. `javafx.media` is in the image, for About.
 - **weka-stable 3.8.7** from Maven Central, linked in-process, with `commons-compress` declared
   explicitly because Weka marks it optional.
 - **GPLv3-or-later**, public repository. Forced by linking Weka; accepted deliberately.
