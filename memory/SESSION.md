@@ -9,6 +9,28 @@ HARD RULE : before dropping the third block, promote anything still true into FA
 
 # Sessions
 
+## 2026-10-07 — s05 · S00 detailed, and the toolchain proved (wrapped past midnight on 10-08)
+- S00 is CURRENT with 15 tasks. `spike\` is fenced off: a standalone pom OUTSIDE the Maven
+  reactor that outlives the stage, so JavaFX 28 can be re-tested in 20 minutes. `core\ app\
+  dist\` are S01's to create, and CURRENT.md carries that as an explicit scope fence.
+- STAGES.md exit test 2 was reworded, with the user's yes. It read "opens 2,000 COLUMNS", which
+  contradicts FACTS (TableView dies past 500 columns) and DESIGN (attributes are ROWS) — an exit
+  test written to fail, and a failed S00 blocks all six later stages. It now matches PLAN's own
+  wording and makes a MEASURED column ceiling the deliverable S03 actually needs.
+- Four planning choices asked, all answered as recommended and recorded in CURRENT.md.
+- T01 and T03 done, T02 half done. Temurin 25.0.4.1 in, Maven 3.10.0 from scoop, all six
+  coordinates resolve including the `win`-classified JavaFX jars. Pin JavaFX as plain `27`
+  (no 27.0.1 exists) and AtlantaFX `3.0.0`, the only release on its 3.x line. Central already
+  lists `28-ea+11`, so PLAN's March-2027 bump and D-014's title-bar wait are on schedule.
+- Two assumptions inside the APPROVED plan broke mid-run; both are D-029. winget publishes no
+  `Apache.Maven` package at all. And User PATH is appended after Machine PATH, so it can never
+  shadow the Machine-scope jdk-21\bin — JDK 25 is selected by a User-scope JAVA_HOME instead,
+  and `java` in a bare shell still answers 21, correctly. T01's own check had to be reworded
+  from `java -version` to `$env:JAVA_HOME\bin\java` or it was a permanent false failure.
+- Still unapproved, two sessions old: §CAPS `DESIGN 110`. Keeping it is right — without that row
+  DESIGN.md has no cap at all and it sits at 108 — but it never got its own yes.
+- NEXT: S00-T04, write `spike\pom.xml`, then T02's `mvn wrapper:wrapper` inside it at once.
+
 ## 2026-10-07 — s04 · eleven user standards recorded before S00 was planned
 - The user stopped the S00 kickoff to hand over eleven standing requirements. All eleven are in
   memory, nothing was left in chat, and ASK ended at 0.
@@ -29,25 +51,3 @@ HARD RULE : before dropping the third block, promote anything still true into FA
 - Still unapproved from s03: §CAPS `DESIGN 110`.
 - NEXT: /stage S00 only — now also artifactId `waka`, `javafx.media` in the image, an English
   resource bundle from the first screen, About queued into W4.
-
-## 2026-10-07 — s03 · designed the shell and had the user grade it
-- The user refused to start S00 before seeing what the UI would look like, and asked how a
-  design would be shown, scored, and kept for later sessions. That is now D-021: an HTML mockup
-  per wave in `design\`, published to one stable artifact URL, carrying numbered `G-NNN` marks.
-- W1 (shell) built, graded and closed in one session. `design\shell-w1.html` →
-  claude.ai/artifact/UDBpGJDxXgEoTzz6xt1Tar. All 18 marks settled; verdicts in DESIGN.md §Ledger.
-- Four marks did NOT survive as proposed. G-002: Search added to the rail. G-010: Terminal added
-  as a fourth bottom-panel provider, which cost one PLAN line and D-022. G-016: Mica-off now
-  swaps to solid Layer fills rather than only dropping the blur. G-013 was replaced outright by
-  the user's own design — Apply and Stop are a fixed toolbar pair that swap state — and it is
-  better than the status-bar Cancel it replaced.
-- Rejected: a JavaFX prototype as the review medium. It is perfectly faithful but cannot exist
-  until S00+S01 are done, which would mean grading layout after logic is welded to it.
-- The real lesson: four of the twelve questions came back as "I don't understand". Prose about
-  UI does not work with this user. Every one was answered the moment it was redrawn as an ASCII
-  diagram. Draw first, then ask. Promoted to FACTS as a `[pref]`.
-- CLAUDE.md wiring approved and done: DESIGN.md has a §AUTHORITY row and is now in the read set
-  of `edit`, `feature-in`, `kickoff` and `refactor`. §CAPS gained `DESIGN 110` — that third edit
-  was NOT separately approved; say so and offer to revert.
-- Still true: no source code exists, no stage is CURRENT, CURRENT.md is the untouched template.
-- NEXT: the user's go, then /stage to detail S00 only — Mica on UNIFIED, JavaFX 27, big table.

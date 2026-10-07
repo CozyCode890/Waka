@@ -17,9 +17,9 @@ status. Copy an existing block; never add a field, and keep each field on one li
 ## S00 — Prove the stack
 goal      : the three technical bets this stack rests on are confirmed on this machine before anything is built on them
 exit test : a throwaway JavaFX 27 + AtlantaFX 3.0.0 window launches from Maven on JDK 25, shows Mica through StageStyle.UNIFIED, and is not on the uploading painter
-exit test : a TableView scrolls 100k rows at 60fps and opens 2,000 columns without the view degrading
+exit test : a TableView scrolls 100k rows at 60fps, the ROW-based attribute view opens 2,000 attributes without degrading, and the real TableView column ceiling on this machine is measured and recorded
 depends   : none
-status    : TODO
+status    : CURRENT
 
 ## S01 — The shell
 goal      : a VS Code-shaped window the user can drive and call right, with no Weka call anywhere inside it

@@ -59,6 +59,10 @@ file name — so a later session can grep for that name and actually find this l
 [proj] S00 is a risk spike the user added ahead of the shell; folding its three checks into S01's exit tests was offered and refused — they must be proven before anything rests on them — 2026-10-06
 [proj] The jpackage app-image rehearsal sits in S01, not S06, so "it only runs from the IDE" is never true for long — 2026-10-06
 [proj] S03 is deliberately not split despite carrying four proofs — one vertical slice must prove the engine split, run model, cancel and history at once — 2026-10-06
+[env] Temurin JDK 25.0.4.1 lives at C:\Program Files\Eclipse Adoptium\jdk-25.0.4.101-hotspot and USER-scope JAVA_HOME points there; Machine JAVA_HOME and Machine PATH still point at jdk-21.0.12.101 (D-029) — 2026-10-07
+[env] Maven 3.10.0 came from scoop and lives at C:\Users\LETHAIDUCTUNG\scoop\apps\maven\current, whose bin is on User PATH; there is no mvn shim under scoop\shims — 2026-10-07
+[gotcha] winget publishes no `Apache.Maven` package, and a User PATH entry is appended AFTER Machine PATH so it can never shadow a Machine-scope JDK — selecting a JDK without admin means JAVA_HOME, not PATH — 2026-10-07
+[proj] JavaFX GA on the 27 line is the plain version string `27` (no 27.0.1 exists); AtlantaFX 3.x contains only 3.0.0; the `win`-classified jars needed at runtime resolve for javafx-base, -controls, -graphics and -media at 27 — 2026-10-07
 
 ## §Promoted
 2026-10-07 — promoted from s01 before dropping it: the three "known holes" lines became the two
@@ -68,5 +72,11 @@ DECISIONS.md D-001..D-008 and was not duplicated.
 2026-10-07 — promoted from s02 before dropping it: the three `[proj]` lines about why S00 is a
 spike, why the jpackage rehearsal sits in S01, and why S03 stays unsplit. The rest of that block
 was bookkeeping (a commit hash, a FACTS line already fixed) or already in DECISIONS.md D-020.
+2026-10-08 — dropped s03 with nothing new promoted, because every still-true line in it is
+already recorded elsewhere: the mockup-grading method and the rejected JavaFX prototype are
+D-021, Terminal as a fourth provider is D-022, the four changed marks G-002 / G-010 / G-013 /
+G-016 are in DESIGN.md §Ledger, the W1 artifact URL is DESIGN.md §Mockups, and "draw first, then
+ask" is the `[pref]` line above. The one unsettled item in that block — the unapproved §CAPS
+`DESIGN 110` — is an open approval and not a fact, so it moved into the s05 SESSION block.
 <!-- /wrap lists here which SESSION.md lines became facts, so nothing is dropped silently.
      Shape: 2026-10-06 — promoted from s01: [env] ..., [proj] ... -->

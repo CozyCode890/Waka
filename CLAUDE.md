@@ -6,12 +6,12 @@ Before your first read of every request, print one line: `row: <name> -> <files>
 
 ## §STATE
 ```
-phase:   STAGING         # PLANNING > STAGING > DETAILING > EXECUTING > CLOSING > REPLANNING
-stage:   0/7             # S00..S06 approved 2026-10-06; none started, no stage is CURRENT
+phase:   EXECUTING       # PLANNING > STAGING > DETAILING > EXECUTING > CLOSING > REPLANNING
+stage:   1/7 S00 CURRENT # T01+T03 done, T02 install done; wrapper + T04..T15 remain
 design:  W1 done         # shell graded 2026-10-07; W2 (options panel) due S02, host model pre-set
-NEXT:    Run /stage to detail S00 only — carry artifactId `waka`, javafx.media, English bundle.
+NEXT:    Write spike\pom.xml for S00-T04 — JavaFX plain `27`, AtlantaFX 3.0.0 — then T02's mvnw.
 ASK:     0               # count of lines under memory/CURRENT.md §Open questions
-updated: 2026-10-07
+updated: 2026-10-08
 ```
 
 ## §ROUTER
