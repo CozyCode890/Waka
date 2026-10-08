@@ -7,8 +7,9 @@ Before your first read of every request, print one line: `row: <name> -> <files>
 ## §STATE
 ```
 phase:   EXECUTING       # PLANNING > STAGING > DETAILING > EXECUTING > CLOSING > REPLANNING
-stage:   2/7 S01 CURRENT # the shell, 32 tasks, 0 done. S00 archived to memory/done/
+stage:   2/7 S01 CURRENT # the shell, 32 tasks, 0 done. Nothing in src/ yet
 design:  W1 done         # W2 (options panel) due S02; S01-T09 fixes §Colour's AtlantaFX column
+repo:    PUBLIC          # github.com/CozyCode890/Waka — memory/ public on purpose; README ask-first
 NEXT:    Write the root pom.xml (S01-T01): modules core/app/dist, release 25, versions pinned once.
 ASK:     0               # count of lines under memory/CURRENT.md §Open questions
 updated: 2026-10-08

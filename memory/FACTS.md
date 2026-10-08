@@ -78,6 +78,7 @@ file name — so a later session can grep for that name and actually find this l
 [gotcha] weka.core.converters.ConverterUtils.DataSource keeps the file open after reading, so deleting a temp dataset right afterwards loses a race on Windows — use deleteOnExit — 2026-10-08
 [proj] spike\ has its own standalone pom OUTSIDE the Maven reactor and outlives S00 on purpose — when JavaFX 28 lands, re-run its probes and compare against spike\README.md instead of arguing from memory — 2026-10-07
 [gotcha] `java -version` on this machine answers 21 because Machine PATH wins; any check that a build really runs on JDK 25 must invoke `$env:JAVA_HOME\bin\java`, or it is a permanent false failure — 2026-10-07
+[gotcha] TableView.scrollTo rebuilds cells to reach a row that may already be visible, a gesture no user performs, so it makes a scroll benchmark meaningless — drive sweeps with VirtualFlow.scrollPixels (wheel) and setPosition (thumb), and print how far each sweep actually moved — 2026-10-08
 
 ## §Promoted
 2026-10-07 — s01: two `[gotcha]` lines + the `[proj]` SOURCE.md line; the rest was already D-001..D-008.
@@ -85,6 +86,7 @@ file name — so a later session can grep for that name and actually find this l
 2026-10-08 — s03: nothing promoted, every line still true elsewhere — D-021, D-022, DESIGN §Ledger (G-002/010/013/016), DESIGN §Mockups, the "draw first" `[pref]` line.
 2026-10-08 — s04: only the `[pref]` process-vocabulary line; the rest was D-023..D-028, PLAN or CLAUDE.md. The unapproved §CAPS `DESIGN 110` it carried was settled on 2026-10-08 at 140.
 2026-10-08 — s07, from the archived S00 CURRENT.md: the `[pref]` test-hidden line (D-030) and the two `[gotcha]` lines on weka.core.Version and DataSource; every other gotcha in that stage was already a line above.
+2026-10-08 — s08 dropped s06: only the `[gotcha]` on TableView.scrollTo above. Every other line in that block was already a fact here (Mica's two DWM calls, off-desktop throttling, the idle pulse timer, 17.07ms, the 500-column ceiling, the 200-column drag, weka's 17 illegal module names), or D-034, or bookkeeping that now lives in done\S00-prove-the-stack.md; its open §CAPS `DESIGN 110` ask was settled at 140.
 2026-10-08 — s05 dropped: the `[proj]` spike\ line and the `[gotcha]` `java -version` line above. The rest was D-029, FACTS lines 62-65, the reworded STAGES exit test, or the `28-ea+11` sighting, which goes stale the day 28 ships.
 <!-- /wrap lists here which SESSION.md lines became facts, so nothing is dropped silently.
      Shape: 2026-10-06 — promoted from s01: [env] ..., [proj] ... -->

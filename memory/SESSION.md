@@ -9,6 +9,29 @@ HARD RULE : before dropping the third block, promote anything still true into FA
 
 # Sessions
 
+## 2026-10-08 — s08 · Repo made public: README, LICENSE, eol, and a lock on README
+- S01 untouched at the user's call, still 0/32. This session only made the repo publishable.
+- `origin` = git@github.com:CozyCode890/Waka.git, `main` pushed, repo confirmed PUBLIC by `gh`.
+  memory\ is public by the user's explicit intent, not by oversight.
+- README.md is Vietnamese while the rest of the repo stays English (D-036) — prose carries no
+  identifier for a later grep, which is all D-003 and D-023 were protecting.
+- Its opening says plainly that no app exists yet and only spike\ runs. That is the line most
+  likely to go stale: it must come out the session S01 produces a launchable image.
+- LICENSE is verbatim GPL-3.0 copied from `C:\Program Files\Weka-3-9-6\COPYING` and hash-matched
+  against it — nothing downloaded, no clause written from memory.
+- No ROUTER row could write a README: it needs PLAN + STAGES + a file under done\ at once, and
+  every row banned done\. Hence the `docs` row, and a §AUTHORITY row for README.md instead of a
+  §RULES rule (which costs deleting one). Every change asks first, no "stage closed" exemption (D-037).
+- .gitignore already kept memory\ and ignored .vscode\, so nothing was rewritten. Of five added
+  rules the one that matters is `assets/audio/*`: D-026's mp3 would otherwise be staged, and a
+  copyrighted master inside a public GPLv3 repo poisons the whole distribution.
+- .gitattributes pins eol — text LF, `*.cmd`/`*.bat` CRLF. `renormalize` changed zero bytes, so
+  it was free now and a whole-codebase diff after S01. I first blamed "the index stores LF"; git
+  always does, and the defect was checkout depending on each clone's core.autocrlf.
+- §CAPS gained `README 200`; the count command had to gain README.md too, or the number counts
+  nothing. FACTS lost its one occurrence of the Windows account name.
+- NEXT: S01-T01 — root `pom.xml`, modules `core app dist`, release 25, versions pinned once.
+
 ## 2026-10-08 — s07 · S00 closed, S01 detailed, and a standing rule about the screen
 - S00 archived unchanged to `memory\done\S00-prove-the-stack.md` via `git mv`; its exit tests
   were re-checked against the artifacts, not the README. STAGES flipped, CURRENT.md = S01, 32 tasks.
@@ -28,27 +51,3 @@ HARD RULE : before dropping the third block, promote anything still true into FA
 - Self-decided, open to objection: `core` declares weka-stable from S01 so packaging meets the
   17 illegal module names early (D-033); groupId `waka` needs `io.github.<user>` before publish.
 - NEXT: S01-T01 — root `pom.xml`, modules `core app dist`, release 25, versions pinned once.
-
-## 2026-10-08 — s06 · S00 executed end to end; two bets nearly recorded wrong
-- All 15 tasks done, all three exit tests pass, committed as 2301e3a. S00 is ready for /stage.
-- Probe A: Mica needs TWO calls. `DwmSetWindowAttribute(DWMWA_SYSTEMBACKDROP_TYPE)` returns
-  S_OK and paints almost nothing unless `DwmExtendFrameIntoClientArea` ran first at MARGINS -1.
-  Run one showed a recoloured caption over an opaque body — indistinguishable from a lost bet.
-- Probe B and C: the first four runs used a window parked off the desktop, to keep the screen
-  free while the user studied. They reported ~48ms and 98% dropped frames and were junk. A
-  control probe drawing one label costs 16.35ms visible and 31.64ms hidden: the window manager
-  throttles what it does not show, and an inactive virtual desktop should behave the same.
-- I also argued at length, and wrongly, that "p95 <= 16.7ms" was unreachable by construction.
-  That assumed a 60Hz panel; this one is 144Hz, and the 16.00ms "baseline" was JavaFX's idle
-  pulse timer, not a floor. A fast table here measures 4-9ms. Check the refresh rate first.
-- Abandoned: driving sweeps with `TableView.scrollTo`, which rebuilds cells to show a row that
-  may already be visible — a gesture nobody performs. Replaced with `VirtualFlow.scrollPixels`
-  (wheel) and `setPosition` (thumb), and every sweep now prints how far it actually moved.
-- Numbers: 100k rows meet 60fps with NO headroom (avg 17.07ms). Column ceiling is 500, not the
-  50-100 FACTS guessed — corrected in place with the user's yes. Dragging the vertical scrollbar
-  is a separate ceiling at 200 columns and needs throttling in S03.
-- For S01: both handle routes agree, so `--add-exports` for com.sun.glass.ui is optional; weka
-  drags 17 jars with illegal automatic module names that jlink will likely fight.
-- NEXT: run /stage to close S00 and detail S01. Still unapproved, three sessions old and now
-  binding at 108/110: §CAPS `DESIGN 110`.
-
