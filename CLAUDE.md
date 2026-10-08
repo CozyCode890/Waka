@@ -7,10 +7,11 @@ Before your first read of every request, print one line: `row: <name> -> <files>
 ## §STATE
 ```
 phase:   EXECUTING       # PLANNING > STAGING > DETAILING > EXECUTING > CLOSING > REPLANNING
-stage:   2/7 S01 CURRENT # the shell, 32/32 tasks, T01-T12 DONE. Reactor + Mica window + harness
-design:  W1 done         # W2 due S02; §Colour's AtlantaFX column VERIFIED in T09, all 13 right
-repo:    PUBLIC          # github.com/CozyCode890/Waka — memory/ public on purpose; README ask-first
-NEXT:    S01-T13 shell skeleton: caption 32 · rail 48 RIGHT · side 260 · status 22 · doc centre.
+stage:   2/7 S01 CURRENT # the shell, 12/32 done (T01-T12): reactor, Mica window, hidden harness
+design:  W1 done         # W2 due S02; §Colour VERIFIED T09; §Type tracking dropped in §Ledger
+repo:    PUBLIC          # github.com/CozyCode890/Waka — README still says "no app yet": now stale
+NEXT:    Build the shell skeleton (S01-T13): caption 32, rail 48 on the RIGHT, side panel 260,
+         status bar 22, document area centre. Use waka.app.Geometry, never a literal.
 ASK:     0               # count of lines under memory/CURRENT.md §Open questions
 updated: 2026-10-08
 ```

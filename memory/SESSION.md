@@ -9,6 +9,23 @@ HARD RULE : before dropping the third block, promote anything still true into FA
 
 # Sessions
 
+## 2026-10-08 — s09 · S01-T01..T12: the reactor, the Mica window, the hidden-test harness
+- Three commits, 11 tests green, nothing ever on screen. Reactor is `core > app > dist`; `core`
+  declares no JavaFX, so `import javafx.*` there fails to compile rather than failing review.
+- Versions written once, in the root pom. JUnit stays 5.14.4 though Central is at 6.1.3: TestFX
+  4.0.18 predates JUnit 6 and declares no Jupiter at all, and the harness it underpins is
+  T11/T12's own deliverable — build the detector before changing what it detects.
+- One UNIFIED stage, Mica via `FindWindowW` only (`--add-exports` gone, D-034). Theme reads
+  `AppsUseLightTheme` through FFM `RegGetValueW`, cross-checked in a test against `reg.exe`.
+- T09: all thirteen AtlantaFX token names DESIGN.md guessed were RIGHT; the caveat is now a check.
+- T10 hit two JavaFX walls, both now FACTS lines: §Geometry became `waka.app.Geometry` in Java,
+  and §Type's `.06em` tracking is DROPPED — user shown both renderings at 11px and 4x (§Ledger).
+- Two defects earned their tests: `waka.css` was inert because the root carried no theme class
+  when `show()` first applied it; and `FxToolkit.registerPrimaryStage()` shows a stage of its own,
+  which broke `initStyle(UNIFIED)` and was itself ON SCREEN. T12 now checks every window.
+- Trap: this session's first read of CURRENT.md was a snapshot at 8c730b3, four commits stale.
+- NEXT: S01-T13 shell skeleton — caption 32 · rail 48 RIGHT · side 260 · status 22 · doc centre.
+
 ## 2026-10-08 — s08 · Repo made public: README, LICENSE, eol, and a lock on README
 - S01 untouched at the user's call, still 0/32. This session only made the repo publishable.
 - `origin` = git@github.com:CozyCode890/Waka.git, `main` pushed, repo confirmed PUBLIC by `gh`.
@@ -30,24 +47,4 @@ HARD RULE : before dropping the third block, promote anything still true into FA
   always does, and the defect was checkout depending on each clone's core.autocrlf.
 - §CAPS gained `README 200`; the count command had to gain README.md too, or the number counts
   nothing. FACTS lost its one occurrence of the Windows account name.
-- NEXT: S01-T01 — root `pom.xml`, modules `core app dist`, release 25, versions pinned once.
-
-## 2026-10-08 — s07 · S00 closed, S01 detailed, and a standing rule about the screen
-- S00 archived unchanged to `memory\done\S00-prove-the-stack.md` via `git mv`; its exit tests
-  were re-checked against the artifacts, not the README. STAGES flipped, CURRENT.md = S01, 32 tasks.
-- New standing constraint from the user: GUI tests run hidden, and putting a window on screen
-  needs their permission asked each time. Written in three places on purpose — D-030, a
-  `[pref]` line in FACTS, and S01-T12, a smoke test that fails the build if the harness ever
-  opens a visible window. A rule that lives only in a session's memory is not a rule.
-- It carries a known conflict: a hidden window is throttled (16.35ms visible vs 31.64ms hidden,
-  identical work), so S03's performance numbers cannot be taken hidden. S01-T29 and every S03
-  measurement must stop and ask for the screen instead of quietly measuring junk.
-- Six choices asked, all answered as recommended → D-030..D-035: TestFX on a real stage at
-  -4000,-4000 (`openjfx-monocle`'s newest release targets JDK 12, so true headless is out on
-  JavaFX 27); pure Java and no FXML, since D-027's reparenting needs Java regardless; keymap
-  file plus an internal store, `settings.json` staying in PLAN's "Later"; accent; Ikonli.
-- Two stale approvals landed: §CAPS `DESIGN 110` → 140, and FACTS §Promoted consolidated from
-  19 lines to 5, which is what made room for the new facts. FACTS went 89/90 → 84/90.
-- Self-decided, open to objection: `core` declares weka-stable from S01 so packaging meets the
-  17 illegal module names early (D-033); groupId `waka` needs `io.github.<user>` before publish.
 - NEXT: S01-T01 — root `pom.xml`, modules `core app dist`, release 25, versions pinned once.

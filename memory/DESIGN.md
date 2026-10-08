@@ -2,7 +2,7 @@
 READ WHEN : any request that draws, lays out or styles UI — rows edit, feature-in, kickoff, refactor.
 EDIT      : §Mockups and §Ledger are yours. A LOCKED number is append-only: supersede it in
             §Ledger with a reason, never overwrite it in place.
-CAP       : 110 lines. Over cap means a wave's detail belongs in its own mockup file, not here.
+CAP       : 140 lines. Over cap means a wave's detail belongs in its own mockup file, not here.
 HARD RULE : this file holds numbers the USER graded. A number with no §Ledger row was never
             graded and is not binding — say so rather than defending it.
 -->

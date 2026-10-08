@@ -27,9 +27,7 @@ file name — so a later session can grep for that name and actually find this l
 [pref] Surface debatable design choices as multiple-choice questions, not prose — 2026-10-06
 [pref] Every option list must say which option is recommended and why — a bare list is not an answer — 2026-10-06
 [pref] Explain concretely: name the file, say what breaks. Abstract process talk gets rejected outright — 2026-10-06
-[proj] No Weka GUI source exists yet — 2026-10-06
 [proj] PLAN.md was frozen 2026-10-06; stack is JDK 25 + JavaFX 27 + AtlantaFX 3.0.0 + weka-stable 3.8.7, GPLv3 — 2026-10-06
-[env] Temurin JDK 21.0.12 is installed and JAVA_HOME points at it; the project targets JDK 25, which is not installed yet — 2026-10-06
 [env] This machine reports ProductName "Windows 10 IoT Enterprise LTSC 2024" but CurrentBuildNumber 26100, i.e. Windows 11 24H2 — 2026-10-06
 [env] Weka 3-9-6 is installed at C:\Program Files\Weka-3-9-6; %USERPROFILE%\wekafiles holds repCache plus packages chiSquaredAttributeEval and userClassifier — 2026-10-06
 [env] No Maven or Gradle on PATH (use the wrapper); winget and scoop are available; Inno Setup is not installed — 2026-10-06
@@ -83,6 +81,7 @@ file name — so a later session can grep for that name and actually find this l
 [gotcha] JavaFX CSS looked-up values resolve COLOURS only — there is no numeric custom property, no letter-spacing and no text-transform — so DESIGN §Geometry lives in waka.app.Geometry as Java constants and §Type's .06em tracking cannot be expressed at all — 2026-10-08
 [proj] testfx-junit5 declares no JUnit Jupiter dependency of its own, only testfx-core plus hamcrest and assertj, so Jupiter's version is ours to supply and a mismatch fails at class-load time instead of at resolve time — 2026-10-08
 [gotcha] maven-wrapper-plugin 3.3.4 ignores -Dtype on the command line and warns "Parameter 'type' is unknown"; only-script must be set in pluginManagement, and .gitignore's *.jar rule would silently drop a classic wrapper jar from the commit — 2026-10-08
+[gotcha] A JavaFX scene stylesheet is first applied at Stage.show(), so the style classes that select a palette must be on the root BEFORE show() — otherwise no looked-up colour is defined, every rule using one dies with "String cannot be cast to Paint", is logged and swallowed, and the first frame is unstyled; see WakaApplication.applyStylesheet and ColourTokenTest — 2026-10-08
 
 ## §Promoted
 2026-10-07 — s01: two `[gotcha]` lines + the `[proj]` SOURCE.md line; the rest was already D-001..D-008.
@@ -92,5 +91,6 @@ file name — so a later session can grep for that name and actually find this l
 2026-10-08 — s07, from the archived S00 CURRENT.md: the `[pref]` test-hidden line (D-030) and the two `[gotcha]` lines on weka.core.Version and DataSource; every other gotcha in that stage was already a line above.
 2026-10-08 — s08 dropped s06: only the `[gotcha]` on TableView.scrollTo above. Every other line in that block was already a fact here (Mica's two DWM calls, off-desktop throttling, the idle pulse timer, 17.07ms, the 500-column ceiling, the 200-column drag, weka's 17 illegal module names), or D-034, or bookkeeping that now lives in done\S00-prove-the-stack.md; its open §CAPS `DESIGN 110` ask was settled at 140.
 2026-10-08 — s05 dropped: the `[proj]` spike\ line and the `[gotcha]` `java -version` line above. The rest was D-029, FACTS lines 62-65, the reworded STAGES exit test, or the `28-ea+11` sighting, which goes stale the day 28 ships.
+2026-10-08 — s09 dropped s07: nothing promoted, every line of it already lived elsewhere — the screen rule in D-030 plus the `[pref]` test-hidden line plus HiddenWindowTest, the 16.35/31.64ms throttling in its own `[gotcha]`, the six choices in D-030..D-035, weka-stable-from-S01 in D-033 and core\pom.xml, and the `io.github` groupId note in the root pom's own description. Two stale lines deleted with the user's approval: "No Weka GUI source exists yet" (src\ now exists) and "JDK 25 is not installed yet" (line 62 supersedes it).
 <!-- /wrap lists here which SESSION.md lines became facts, so nothing is dropped silently.
      Shape: 2026-10-06 — promoted from s01: [env] ..., [proj] ... -->
