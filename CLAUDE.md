@@ -71,6 +71,6 @@ A new file under memory/ with no row here is a defect: add the row, or do not ad
 
 ## §CAPS
 CLAUDE.md 85 · PLAN 120 · STAGES 80 · CURRENT 150 · FACTS 90 · DECISIONS 80 · SESSION 50 ·
-RULES 40 · SOURCE 90 · DESIGN 140 · each file in done/ 150
+RULES 40 · SOURCE 90 · DESIGN 140 · README 200 · each file in done/ 150
 
-Count: `Get-ChildItem CLAUDE.md, memory\*.md | % { "{0,4} {1}" -f (Get-Content $_ | Measure-Object -Line).Lines, $_.Name }`
+Count: `Get-ChildItem CLAUDE.md, README.md, memory\*.md | % { "{0,4} {1}" -f (Get-Content $_ | Measure-Object -Line).Lines, $_.Name }`
