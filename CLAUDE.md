@@ -26,12 +26,14 @@ updated: 2026-10-08
 | `feature-new` — unplanned | PLAN, STAGES, DECISIONS | none | CURRENT, SOURCE, done/ |
 | `kickoff` — start a stage | PLAN, STAGES, FACTS, DECISIONS, SESSION, RULES, DESIGN | `ls src/` only | done/ |
 | `refactor` — architecture | PLAN, DECISIONS, SOURCE, FACTS, DESIGN | modules SOURCE names | done/ |
+| `docs` — README or another public-facing file | PLAN, STAGES, FACTS, DECISIONS, done/ for the stage being written up | — | CURRENT, SOURCE, SESSION, DESIGN |
 | `cold` — first session ever | all of memory/ | — | done/ |
 
 ## §AUTHORITY
 | file | you edit freely | ask the user first |
 |---|---|---|
 | CLAUDE.md | §STATE block only | everything else; to ADD a rule you must DELETE one |
+| README.md | nothing | every change, without exception — it is the public face of this repo |
 | memory/PLAN.md | nothing | every change, typos included |
 | memory/STAGES.md | status flips + done-dates | add/remove/reorder a stage, reword a goal or exit test |
 | memory/CURRENT.md | all of it, continuously | — |
