@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>waka</groupId>
+  <artifactId>waka</artifactId>
+  <version>0.1.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
+
+  <name>Waka</name>
+  <description>
+    A desktop shell over Weka's own algorithms. This is the reactor root: it builds nothing
+    itself and exists to hold the module list, every version this project pins, and the plugin
+    configuration the modules share.
+
+    The groupId is the bare word "waka" because nothing here is published to a repository yet.
+    Publishing would require a reverse-domain groupId such as io.github.cozycode890, and that
+    rename belongs to the release that first needs it, not to this pom.
+
+    spike/ next to this file has its own standalone pom and is deliberately NOT a module below:
+    it is the frozen S00 reference, and nothing written there may leak into the application.
+  </description>
+
+  <url>https://github.com/CozyCode890/Waka</url>
+
+  <licenses>
+    <license>
+      <!-- Forced, and accepted deliberately: this application links weka-stable in-process, and
+           Weka is GPL-3.0-or-later with no linking exception. See memory/DECISIONS.md D-011. -->
+      <name>GNU General Public License v3.0 or later</name>
+      <url>https://www.gnu.org/licenses/gpl-3.0.html</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <scm>
+    <url>https://github.com/CozyCode890/Waka</url>
+    <connection>scm:git:https://github.com/CozyCode890/Waka.git</connection>
+  </scm>
+
+  <modules>
+    <!-- The dependency direction is core -> app -> dist and is never circular. core is UI-free,
+         app is the only module that draws, dist only packages what the other two produced. -->
+    <module>core</module>
+    <module>app</module>
+    <module>dist</module>
+  </modules>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+    <!-- Java 25 LTS, bundled with the application by jpackage. This machine selects it through a
+         USER-scope JAVA_HOME while Machine PATH stays on JDK 21, so `java -version` in a bare
+         shell answers 21 and Maven still builds on 25. See D-029. -->
+    <maven.compiler.release>25</maven.compiler.release>
+
+    <!-- Every version this project depends on is written once, here, and nowhere else. A version
+         literal inside a module pom is a defect: it is the one that gets forgotten on an upgrade.
+
+         JavaFX GA on the 27 line is the plain string 27 - no 27.0.1 exists - and 28 is still at
+         early access, so "the newest" would mean shipping a preview. AtlantaFX 3.x contains only
+         3.0.0. Both were confirmed against Maven Central in S00-T03. -->
+    <javafx.version>27</javafx.version>
+    <atlantafx.version>3.0.0</atlantafx.version>
+
+    <!-- Ikonli's Feather pack: MIT, so it raises no question against this GPLv3 distribution, and
+         it is the pack AtlantaFX's own samples are drawn with, so stroke weight already matches at
+         20px. See D-035. -->
+    <ikonli.version>12.4.0</ikonli.version>
+
+    <!-- weka-stable, not weka-dev: it is what the official installers ship and what repository
+         packages are built against, and this project leans hard on internal API. See D-015.
+         commons-compress is declared because weka-stable marks it optional, so it is not
+         inherited; without it, loading an .arff.gz fails at runtime and not at build time. -->
+    <weka.version>3.8.7</weka.version>
+    <commons-compress.version>1.28.0</commons-compress.version>
+
+    <!-- JUnit 5, not the 6.1.3 that is current on Central. TestFX 4.0.18 predates JUnit 6 and
+         declares no Jupiter dependency of its own, so its ApplicationExtension is compiled
+         against the 5.x extension API and the 6 pairing is unproven here. The harness this
+         version underpins is itself the deliverable of S01-T11 and T12: a failure there has to
+         mean our code is wrong, not that the platform underneath was never tried. Raising this
+         to 6 later is one line, and by then the harness exists to say whether it broke. -->
+    <junit.version>5.14.4</junit.version>
+    <testfx.version>4.0.18</testfx.version>
+
+    <maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
+    <maven-surefire-plugin.version>3.6.0</maven-surefire-plugin.version>
+    <maven-wrapper-plugin.version>3.3.4</maven-wrapper-plugin.version>
+    <javafx-maven-plugin.version>0.0.8</javafx-maven-plugin.version>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <!-- JavaFX sits at provided scope on purpose. The jlink image built in S01-T27 contains the
+           JDK plus the javafx.* modules, so the runtime supplies them and they must never be
+           copied into the application's lib directory. provided keeps them on the compile and
+           test classpaths, which is all the build needs. See D-016.
+
+           No classifier is written here: the openjfx poms detect the platform themselves and
+           resolve the win-classified jars that carry the natives. -->
+      <dependency>
+        <groupId>org.openjfx</groupId>
+        <artifactId>javafx-base</artifactId>
+        <version>${javafx.version}</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.openjfx</groupId>
+        <artifactId>javafx-graphics</artifactId>
+        <version>${javafx.version}</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.openjfx</groupId>
+        <artifactId>javafx-controls</artifactId>
+        <version>${javafx.version}</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.openjfx</groupId>
+        <artifactId>javafx-media</artifactId>
+        <version>${javafx.version}</version>
+        <scope>provided</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>io.github.mkpaz</groupId>
+        <artifactId>atlantafx-base</artifactId>
+        <version>${atlantafx.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.kordamp.ikonli</groupId>
+        <artifactId>ikonli-javafx</artifactId>
+        <version>${ikonli.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kordamp.ikonli</groupId>
+        <artifactId>ikonli-feather-pack</artifactId>
+        <version>${ikonli.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>nz.ac.waikato.cms.weka</groupId>
+        <artifactId>weka-stable</artifactId>
+        <version>${weka.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-compress</artifactId>
+        <version>${commons-compress.version}</version>
+      </dependency>
+
+      <dependency>
+        <!-- The BOM aligns junit-jupiter, junit-platform and their engines with one version, so a
+             module only ever names the artifact it uses. -->
+        <groupId>org.junit</groupId>
+        <artifactId>junit-bom</artifactId>
+        <version>${junit.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.testfx</groupId>
+        <artifactId>testfx-core</artifactId>
+        <version>${testfx.version}</version>
+        <scope>test</scope>
+        <exclusions>
+          <exclusion>
+            <!-- testfx-core asks for the OSGi core API at runtime scope. Nothing in this
+                 application is an OSGi bundle, so it would be a jar on the test classpath that no
+                 class ever loads. -->
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.testfx</groupId>
+        <artifactId>testfx-junit5</artifactId>
+        <version>${testfx.version}</version>
+        <scope>test</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <!-- Held at the 3.x line. The 4.0.0 releases on Central are still beta, and the
+               compiler is not where this project spends its risk budget. -->
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>${maven-compiler-plugin.version}</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>${maven-surefire-plugin.version}</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-wrapper-plugin</artifactId>
+          <version>${maven-wrapper-plugin.version}</version>
+          <configuration>
+            <!-- only-script writes mvnw, mvnw.cmd and the properties file, and no jar at all. The
+                 repository .gitignore ignores *.jar, so the classic wrapper's jar would be left
+                 out of the commit without anyone noticing, and the clone would not build. -->
+            <type>only-script</type>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.openjfx</groupId>
+          <artifactId>javafx-maven-plugin</artifactId>
+          <version>${javafx-maven-plugin.version}</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+</project>

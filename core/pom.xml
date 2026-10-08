@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>waka</groupId>
+    <artifactId>waka</artifactId>
+    <version>0.1.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>waka-core</artifactId>
+  <packaging>jar</packaging>
+
+  <name>Waka core</name>
+  <description>
+    Everything that is not a screen: settings, the keymap, the command registry, the language
+    pack, and from S02 onward the only code in this project that calls weka.*.
+
+    This module is UI-free by construction rather than by agreement. It does not declare JavaFX,
+    so a line reading `import javafx.scene.control.Button` in here does not pass review - it does
+    not compile. That is the whole point of the module, and it is why nothing below may add a
+    JavaFX dependency "just for a utility class".
+  </description>
+
+  <dependencies>
+    <dependency>
+      <!-- Declared from S01 even though S01 makes no Weka call at all. D-016 predicts that
+           weka's 17 illegal automatic module names cannot bite jpackage, because the jlink image
+           holds only the JDK plus javafx.* and weka rides the classpath. That prediction costs
+           one dependency line to turn into evidence in S01-T28, against rediscovering it in S03
+           on top of an engine, a run model and a run history. See D-033. -->
+      <groupId>nz.ac.waikato.cms.weka</groupId>
+      <artifactId>weka-stable</artifactId>
+    </dependency>
+    <dependency>
+      <!-- weka-stable marks commons-compress optional, so it is not inherited transitively.
+           Without this line, reading an .arff.gz or .arff.bz2 fails at runtime and not at
+           build time, which is the worst place to find out. -->
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-compress</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+</project>

@@ -22,17 +22,31 @@ tabs open and close around a placeholder. Apply/Stop and the option string are d
 ## Tasks
 
 ### The reactor
-- [ ] S01-T01 Root `pom.xml`, packaging `pom`, modules `core app dist`, groupId `waka`,
+- [x] S01-T01 Root `pom.xml`, packaging `pom`, modules `core app dist`, groupId `waka`,
       artifactId `waka`, 0.1.0-SNAPSHOT, `release` 25, UTF-8. dependencyManagement pins
       JavaFX 27, AtlantaFX 3.0.0, Ikonli-Feather, weka-stable 3.8.7, commons-compress,
       JUnit 5, TestFX.
-- [ ] S01-T02 Maven wrapper at the root, `-Dtype=only-script` like `spike\` — three files, no
+- [x] S01-T02 Maven wrapper at the root, `-Dtype=only-script` like `spike\` — three files, no
       jar. `.gitignore` ignores `*.jar`, so a wrapper generated any other way is dropped
       SILENTLY: the build keeps working here and breaks for whoever clones. Verify with
       `git status --ignored` afterwards, not by eye.
-- [ ] S01-T03 `core`: UI-free by construction — its pom simply does not declare JavaFX, so a
+- [x] S01-T03 `core`: UI-free by construction — its pom simply does not declare JavaFX, so a
       `javafx.*` import cannot compile. Declares weka-stable + commons-compress (D-033).
-- [ ] S01-T04 `app`: JavaFX + AtlantaFX, depends on `core`. `dist`: packaging only, no sources.
+- [x] S01-T04 `app`: JavaFX + AtlantaFX, depends on `core`. `dist`: packaging only, no sources.
+
+Reactor built, `.\mvnw -B verify` green, order `waka > core > app > dist`. `--ignored` named no
+wrapper file. Versions FACTS had not already fixed, resolved against Central 2026-10-08: Ikonli
+`12.4.0`, JUnit `5.14.4`, TestFX `4.0.18`, commons-compress `1.28.0`; plugins compiler `3.14.0`
+(4.x is still beta), surefire `3.6.0`, wrapper `3.3.4`, javafx `0.0.8`. JUnit stays on 5 though
+Central is at 6.1.3 — asked and answered, reason written in the root pom.
+Three findings, each of which bites later rather than now:
+- `maven-wrapper-plugin` 3.3.4 does not read `-Dtype` from the command line; it warns "Parameter
+  'type' is unknown". `only-script` happened because pluginManagement sets it. T02's phrasing
+  names a flag that does nothing — the pom is what decides.
+- `testfx-junit5` 4.0.18 declares NO Jupiter dependency, only testfx-core + hamcrest + assertj.
+  So nothing can conflict at resolve time in T11, and a wrong Jupiter would instead fail at
+  class-load time, which is the harder failure to read.
+- `testfx-core` wants `org.osgi:org.osgi.core` at runtime scope; excluded in the root pom.
 
 ### The window and the material
 - [ ] S01-T05 `app` main class: one `StageStyle.UNIFIED` stage. DWM sequence lifted from

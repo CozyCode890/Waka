@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>waka</groupId>
+    <artifactId>waka</artifactId>
+    <version>0.1.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>waka-app</artifactId>
+  <packaging>jar</packaging>
+
+  <name>Waka application</name>
+  <description>
+    Every screen in Waka, and the only module that draws. One view class per region of the
+    shell, written in Java: this project ships no FXML, because D-027 needs the options editor
+    and the tree viewer reparented between three hosts at runtime, which FXML cannot express,
+    and because a renamed node should be a compile error rather than a stack trace at launch.
+    See D-031.
+  </description>
+
+  <properties>
+    <!-- The default for every automated run: the test stage is parked off the visible desktop.
+         Override with -Dwaka.visible=true, which is only ever passed after asking the person at
+         the keyboard, because they study on this machine while the app is being built. See
+         D-030, and S01-T12 for the test that fails the build if this is ever bypassed. -->
+    <waka.visible>false</waka.visible>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>waka</groupId>
+      <artifactId>waka-core</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <!-- javafx-controls pulls base and graphics with it; both are pinned in the root pom so the
+         transitive versions cannot drift. Scope comes from the root as well: provided, because
+         the jlink image supplies these modules at runtime. See D-016. -->
+    <dependency>
+      <groupId>org.openjfx</groupId>
+      <artifactId>javafx-controls</artifactId>
+    </dependency>
+    <dependency>
+      <!-- Not used by any screen in S01. Declared now because the About player needs
+           javafx.media in the runtime image, and a module that does not resolve today will not
+           resolve in S05 either. See D-026. -->
+      <groupId>org.openjfx</groupId>
+      <artifactId>javafx-media</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>io.github.mkpaz</groupId>
+      <artifactId>atlantafx-base</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.testfx</groupId>
+      <artifactId>testfx-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.testfx</groupId>
+      <artifactId>testfx-junit5</artifactId>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <systemPropertyVariables>
+            <!-- Read by the test harness, not by the application. false parks the stage at
+                 -4000,-4000; true puts it on the visible screen. -->
+            <waka.visible>${waka.visible}</waka.visible>
+          </systemPropertyVariables>
+          <!-- MicaWindow calls into dwmapi.dll and user32.dll through java.lang.foreign. Without
+               this flag JDK 25 still runs and prints a restricted-method warning per call site.
+               Only ALL-UNNAMED is named here: surefire puts JavaFX on the classpath, so
+               javafx.graphics is not a named module in a test run and listing it would be a
+               warning about a module that does not exist. -->
+          <argLine>--enable-native-access=ALL-UNNAMED</argLine>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.openjfx</groupId>
+        <artifactId>javafx-maven-plugin</artifactId>
+        <configuration>
+          <mainClass>waka.app.WakaApplication</mainClass>
+          <options>
+            <!-- javafx.graphics is named as well as ALL-UNNAMED because this plugin runs the
+                 application from the module path, where javafx.graphics loads its own native
+                 libraries and ALL-UNNAMED does not cover a named module. S00's first run warned
+                 about exactly that. -->
+            <option>--enable-native-access=ALL-UNNAMED,javafx.graphics</option>
+          </options>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>waka</groupId>
+    <artifactId>waka</artifactId>
+    <version>0.1.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>waka-dist</artifactId>
+  <packaging>pom</packaging>
+
+  <name>Waka distribution</name>
+  <description>
+    Packaging only. This module has no src directory and never will: it holds the jlink and
+    jpackage steps (S01-T27 and T28) and later the Inno Setup script (S06), and its packaging is
+    pom so that no jar is produced for it.
+
+    The dependency on waka-app below is not there to be compiled against - nothing here compiles.
+    It is what tells Maven the reactor order is core, then app, then dist, and it is how the
+    packaging steps find the application jar to put in the image.
+  </description>
+
+  <dependencies>
+    <dependency>
+      <groupId>waka</groupId>
+      <artifactId>waka-app</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+  </dependencies>
+</project>
