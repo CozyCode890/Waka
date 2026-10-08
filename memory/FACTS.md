@@ -60,7 +60,7 @@ file name — so a later session can grep for that name and actually find this l
 [proj] The jpackage app-image rehearsal sits in S01, not S06, so "it only runs from the IDE" is never true for long — 2026-10-06
 [proj] S03 is deliberately not split despite carrying four proofs — one vertical slice must prove the engine split, run model, cancel and history at once — 2026-10-06
 [env] Temurin JDK 25.0.4.1 lives at C:\Program Files\Eclipse Adoptium\jdk-25.0.4.101-hotspot and USER-scope JAVA_HOME points there; Machine JAVA_HOME and Machine PATH still point at jdk-21.0.12.101 (D-029) — 2026-10-07
-[env] Maven 3.10.0 came from scoop and lives at C:\Users\LETHAIDUCTUNG\scoop\apps\maven\current, whose bin is on User PATH; there is no mvn shim under scoop\shims — 2026-10-07
+[env] Maven 3.10.0 came from scoop and lives at %USERPROFILE%\scoop\apps\maven\current, whose bin is on User PATH; there is no mvn shim under scoop\shims — 2026-10-07
 [gotcha] winget publishes no `Apache.Maven` package, and a User PATH entry is appended AFTER Machine PATH so it can never shadow a Machine-scope JDK — selecting a JDK without admin means JAVA_HOME, not PATH — 2026-10-07
 [proj] JavaFX GA on the 27 line is the plain version string `27` (no 27.0.1 exists); AtlantaFX 3.x contains only 3.0.0; the `win`-classified jars needed at runtime resolve for javafx-base, -controls, -graphics and -media at 27 — 2026-10-07
 [env] Display is 1920x1080 at 144Hz on an NVIDIA GeForce RTX 4050 Laptop GPU, driver nvldumdx.dll 32.0.16.1742, running JavaFX through D3D9Ex — 2026-10-08

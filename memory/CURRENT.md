@@ -26,8 +26,10 @@ tabs open and close around a placeholder. Apply/Stop and the option string are d
       artifactId `waka`, 0.1.0-SNAPSHOT, `release` 25, UTF-8. dependencyManagement pins
       JavaFX 27, AtlantaFX 3.0.0, Ikonli-Feather, weka-stable 3.8.7, commons-compress,
       JUnit 5, TestFX.
-- [ ] S01-T02 Maven wrapper at the root, `-Dtype=only-script` like `spike\`. Confirm `target\`
-      is already in `.gitignore` and that nothing new needs ignoring.
+- [ ] S01-T02 Maven wrapper at the root, `-Dtype=only-script` like `spike\` — three files, no
+      jar. `.gitignore` ignores `*.jar`, so a wrapper generated any other way is dropped
+      SILENTLY: the build keeps working here and breaks for whoever clones. Verify with
+      `git status --ignored` afterwards, not by eye.
 - [ ] S01-T03 `core`: UI-free by construction — its pom simply does not declare JavaFX, so a
       `javafx.*` import cannot compile. Declares weka-stable + commons-compress (D-033).
 - [ ] S01-T04 `app`: JavaFX + AtlantaFX, depends on `core`. `dist`: packaging only, no sources.

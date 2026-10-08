@@ -1,0 +1,16 @@
+# Line endings are decided HERE, not by each machine's core.autocrlf. Without this file the
+# answer depends on whose clone it is, and the whole repo re-diffs the first time someone with a
+# different setting saves a file.
+
+# Everything text is LF in the index and LF in the working tree.
+* text=auto eol=lf
+
+# Except the two kinds of file Windows itself reads. cmd.exe can misread a label or a goto in a
+# batch file saved with LF endings, which is how a working mvnw.cmd becomes a broken one on a
+# clone that sets core.autocrlf=false. Maven's own wrapper ships these as CRLF for this reason.
+*.cmd text eol=crlf
+*.bat text eol=crlf
+
+# Binary — never converted, never diffed as text.
+*.png binary
+*.ico binary
