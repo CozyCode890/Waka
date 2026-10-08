@@ -50,7 +50,5 @@ HARD RULE : before dropping the third block, promote anything still true into FA
   shadow the Machine-scope jdk-21\bin — JDK 25 is selected by a User-scope JAVA_HOME instead,
   and `java` in a bare shell still answers 21, correctly. T01's own check had to be reworded
   from `java -version` to `$env:JAVA_HOME\bin\java` or it was a permanent false failure.
-- Still unapproved, two sessions old: §CAPS `DESIGN 110`. Keeping it is right — without that row
-  DESIGN.md has no cap at all and it sits at 108 — but it never got its own yes.
 - NEXT: S00-T04, write `spike\pom.xml`, then T02's `mvn wrapper:wrapper` inside it at once.
 
