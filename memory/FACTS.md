@@ -73,23 +73,18 @@ file name — so a later session can grep for that name and actually find this l
 [gotcha] weka-stable drags 17 transitive jars whose automatic module names are illegal (netlib-native_* contain `native`, java-cup contains `11b`); javafx-maven-plugin drops them from the module path with a warning, and S01's jlink should expect the same fight — 2026-10-08
 [gotcha] --enable-native-access=ALL-UNNAMED does not cover a named module; javafx.graphics loads its own natives and has to be listed by name as well — 2026-10-08
 [pref] Process vocabulary fails the same way UI vocabulary does: "mockup", "wave" and "stage" each had to be shown before the user could answer one. Demonstrate the thing, then ask — 2026-10-08
+[pref] GUI tests run on a stage parked off the desktop at -4000,-4000; putting any window on the visible screen needs the user's permission asked first, every time, because they study on this machine while it is built (D-030) — 2026-10-08
+[gotcha] weka.core.Version.VERSION reports 3.8.8-SNAPSHOT from inside the weka-stable:3.8.7 artifact, so the About screen must print the Maven coordinate and never that constant — 2026-10-08
+[gotcha] weka.core.converters.ConverterUtils.DataSource keeps the file open after reading, so deleting a temp dataset right afterwards loses a race on Windows — use deleteOnExit — 2026-10-08
+[proj] spike\ has its own standalone pom OUTSIDE the Maven reactor and outlives S00 on purpose — when JavaFX 28 lands, re-run its probes and compare against spike\README.md instead of arguing from memory — 2026-10-07
+[gotcha] `java -version` on this machine answers 21 because Machine PATH wins; any check that a build really runs on JDK 25 must invoke `$env:JAVA_HOME\bin\java`, or it is a permanent false failure — 2026-10-07
 
 ## §Promoted
-2026-10-07 — promoted from s01 before dropping it: the three "known holes" lines became the two
-`[gotcha]` lines and the `[proj]` SOURCE.md line above. Everything else in that block (the
-parallel-design method, the critic's cut list, the eight settled questions) is already in
-DECISIONS.md D-001..D-008 and was not duplicated.
-2026-10-07 — promoted from s02 before dropping it: the three `[proj]` lines about why S00 is a
-spike, why the jpackage rehearsal sits in S01, and why S03 stays unsplit. The rest of that block
-was bookkeeping (a commit hash, a FACTS line already fixed) or already in DECISIONS.md D-020.
-2026-10-08 — dropped s03 with nothing new promoted, because every still-true line in it is
-already recorded elsewhere: the mockup-grading method and the rejected JavaFX prototype are
-D-021, Terminal as a fourth provider is D-022, the four changed marks G-002 / G-010 / G-013 /
-G-016 are in DESIGN.md §Ledger, the W1 artifact URL is DESIGN.md §Mockups, and "draw first, then
-ask" is the `[pref]` line above. The one unsettled item in that block — the unapproved §CAPS
-`DESIGN 110` — is an open approval and not a fact, so it moved into the s05 SESSION block.
-2026-10-08 — promoted from s04 before dropping it: only the `[pref]` process-vocabulary line
-above. The rest of that block is already in DECISIONS.md (D-023..D-028), PLAN.md or CLAUDE.md,
-and the unapproved §CAPS `DESIGN 110` is an open approval, not a fact — s05's block carries it.
+2026-10-07 — s01: two `[gotcha]` lines + the `[proj]` SOURCE.md line; the rest was already D-001..D-008.
+2026-10-07 — s02: the three `[proj]` lines on why S00 is a spike, why jpackage rehearses in S01, why S03 stays unsplit; the rest was bookkeeping or D-020.
+2026-10-08 — s03: nothing promoted, every line still true elsewhere — D-021, D-022, DESIGN §Ledger (G-002/010/013/016), DESIGN §Mockups, the "draw first" `[pref]` line.
+2026-10-08 — s04: only the `[pref]` process-vocabulary line; the rest was D-023..D-028, PLAN or CLAUDE.md. The unapproved §CAPS `DESIGN 110` it carried was settled on 2026-10-08 at 140.
+2026-10-08 — s07, from the archived S00 CURRENT.md: the `[pref]` test-hidden line (D-030) and the two `[gotcha]` lines on weka.core.Version and DataSource; every other gotcha in that stage was already a line above.
+2026-10-08 — s05 dropped: the `[proj]` spike\ line and the `[gotcha]` `java -version` line above. The rest was D-029, FACTS lines 62-65, the reworded STAGES exit test, or the `28-ea+11` sighting, which goes stale the day 28 ships.
 <!-- /wrap lists here which SESSION.md lines became facts, so nothing is dropped silently.
      Shape: 2026-10-06 — promoted from s01: [env] ..., [proj] ... -->

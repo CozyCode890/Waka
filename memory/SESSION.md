@@ -9,6 +9,26 @@ HARD RULE : before dropping the third block, promote anything still true into FA
 
 # Sessions
 
+## 2026-10-08 — s07 · S00 closed, S01 detailed, and a standing rule about the screen
+- S00 archived unchanged to `memory\done\S00-prove-the-stack.md` via `git mv`; its exit tests
+  were re-checked against the artifacts, not the README. STAGES flipped, CURRENT.md = S01, 32 tasks.
+- New standing constraint from the user: GUI tests run hidden, and putting a window on screen
+  needs their permission asked each time. Written in three places on purpose — D-030, a
+  `[pref]` line in FACTS, and S01-T12, a smoke test that fails the build if the harness ever
+  opens a visible window. A rule that lives only in a session's memory is not a rule.
+- It carries a known conflict: a hidden window is throttled (16.35ms visible vs 31.64ms hidden,
+  identical work), so S03's performance numbers cannot be taken hidden. S01-T29 and every S03
+  measurement must stop and ask for the screen instead of quietly measuring junk.
+- Six choices asked, all answered as recommended → D-030..D-035: TestFX on a real stage at
+  -4000,-4000 (`openjfx-monocle`'s newest release targets JDK 12, so true headless is out on
+  JavaFX 27); pure Java and no FXML, since D-027's reparenting needs Java regardless; keymap
+  file plus an internal store, `settings.json` staying in PLAN's "Later"; accent; Ikonli.
+- Two stale approvals landed: §CAPS `DESIGN 110` → 140, and FACTS §Promoted consolidated from
+  19 lines to 5, which is what made room for the new facts. FACTS went 89/90 → 84/90.
+- Self-decided, open to objection: `core` declares weka-stable from S01 so packaging meets the
+  17 illegal module names early (D-033); groupId `waka` needs `io.github.<user>` before publish.
+- NEXT: S01-T01 — root `pom.xml`, modules `core app dist`, release 25, versions pinned once.
+
 ## 2026-10-08 — s06 · S00 executed end to end; two bets nearly recorded wrong
 - All 15 tasks done, all three exit tests pass, committed as 2301e3a. S00 is ready for /stage.
 - Probe A: Mica needs TWO calls. `DwmSetWindowAttribute(DWMWA_SYSTEMBACKDROP_TYPE)` returns
@@ -31,24 +51,4 @@ HARD RULE : before dropping the third block, promote anything still true into FA
   drags 17 jars with illegal automatic module names that jlink will likely fight.
 - NEXT: run /stage to close S00 and detail S01. Still unapproved, three sessions old and now
   binding at 108/110: §CAPS `DESIGN 110`.
-
-## 2026-10-07 — s05 · S00 detailed, and the toolchain proved (wrapped past midnight on 10-08)
-- S00 is CURRENT with 15 tasks. `spike\` is fenced off: a standalone pom OUTSIDE the Maven
-  reactor that outlives the stage, so JavaFX 28 can be re-tested in 20 minutes. `core\ app\
-  dist\` are S01's to create, and CURRENT.md carries that as an explicit scope fence.
-- STAGES.md exit test 2 was reworded, with the user's yes. It read "opens 2,000 COLUMNS", which
-  contradicts FACTS (TableView dies past 500 columns) and DESIGN (attributes are ROWS) — an exit
-  test written to fail, and a failed S00 blocks all six later stages. It now matches PLAN's own
-  wording and makes a MEASURED column ceiling the deliverable S03 actually needs.
-- Four planning choices asked, all answered as recommended and recorded in CURRENT.md.
-- T01 and T03 done, T02 half done. Temurin 25.0.4.1 in, Maven 3.10.0 from scoop, all six
-  coordinates resolve including the `win`-classified JavaFX jars. Pin JavaFX as plain `27`
-  (no 27.0.1 exists) and AtlantaFX `3.0.0`, the only release on its 3.x line. Central already
-  lists `28-ea+11`, so PLAN's March-2027 bump and D-014's title-bar wait are on schedule.
-- Two assumptions inside the APPROVED plan broke mid-run; both are D-029. winget publishes no
-  `Apache.Maven` package at all. And User PATH is appended after Machine PATH, so it can never
-  shadow the Machine-scope jdk-21\bin — JDK 25 is selected by a User-scope JAVA_HOME instead,
-  and `java` in a bare shell still answers 21, correctly. T01's own check had to be reworded
-  from `java -version` to `$env:JAVA_HOME\bin\java` or it was a permanent false failure.
-- NEXT: S00-T04, write `spike\pom.xml`, then T02's `mvn wrapper:wrapper` inside it at once.
 

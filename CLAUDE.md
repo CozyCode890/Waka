@@ -6,10 +6,10 @@ Before your first read of every request, print one line: `row: <name> -> <files>
 
 ## §STATE
 ```
-phase:   CLOSING         # PLANNING > STAGING > DETAILING > EXECUTING > CLOSING > REPLANNING
-stage:   1/7 S00 DONE    # all 15 tasks, all 3 exit tests pass; committed 2301e3a 2026-10-08
-design:  W1 done         # shell graded 2026-10-07; W2 (options panel) due S02, host model pre-set
-NEXT:    Run /stage to close S00 and detail S01 — the shell, jpackage, and AtlantaFX's real tokens.
+phase:   EXECUTING       # PLANNING > STAGING > DETAILING > EXECUTING > CLOSING > REPLANNING
+stage:   2/7 S01 CURRENT # the shell, 32 tasks, 0 done. S00 archived to memory/done/
+design:  W1 done         # W2 (options panel) due S02; S01-T09 fixes §Colour's AtlantaFX column
+NEXT:    Write the root pom.xml (S01-T01): modules core/app/dist, release 25, versions pinned once.
 ASK:     0               # count of lines under memory/CURRENT.md §Open questions
 updated: 2026-10-08
 ```
@@ -69,6 +69,6 @@ A new file under memory/ with no row here is a defect: add the row, or do not ad
 
 ## §CAPS
 CLAUDE.md 85 · PLAN 120 · STAGES 80 · CURRENT 150 · FACTS 90 · DECISIONS 80 · SESSION 50 ·
-RULES 40 · SOURCE 90 · DESIGN 110 · each file in done/ 150
+RULES 40 · SOURCE 90 · DESIGN 140 · each file in done/ 150
 
 Count: `Get-ChildItem CLAUDE.md, memory\*.md | % { "{0,4} {1}" -f (Get-Content $_ | Measure-Object -Line).Lines, $_.Name }`

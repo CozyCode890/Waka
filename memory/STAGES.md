@@ -19,14 +19,14 @@ goal      : the three technical bets this stack rests on are confirmed on this m
 exit test : a throwaway JavaFX 27 + AtlantaFX 3.0.0 window launches from Maven on JDK 25, shows Mica through StageStyle.UNIFIED, and is not on the uploading painter
 exit test : a TableView scrolls 100k rows at 60fps, the ROW-based attribute view opens 2,000 attributes without degrading, and the real TableView column ceiling on this machine is measured and recorded
 depends   : none
-status    : CURRENT
+status    : DONE (2026-10-08)
 
 ## S01 — The shell
 goal      : a VS Code-shaped window the user can drive and call right, with no Weka call anywhere inside it
 exit test : rail, document tabs, bottom panel, status bar and command palette all work, and a keymap file can REMOVE a default binding, not only add one
 exit test : a jpackage app-image launches by double-click outside the IDE, and the app looks finished with Mica off
 depends   : S00
-status    : TODO
+status    : CURRENT
 
 ## S02 — The options editor
 goal      : any Weka OptionHandler renders as a real form, replacing the GenericObjectEditor dialog
