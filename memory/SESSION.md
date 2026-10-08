@@ -11,28 +11,26 @@ HARD RULE : before dropping the third block, promote anything still true into FA
 
 ## 2026-10-08 — s06 · S00 executed end to end; two bets nearly recorded wrong
 - All 15 tasks done, all three exit tests pass, committed as 2301e3a. S00 is ready for /stage.
-- Probe A: Mica needs TWO calls, not one. `DwmSetWindowAttribute(DWMWA_SYSTEMBACKDROP_TYPE)`
-  returns S_OK and paints almost nothing unless `DwmExtendFrameIntoClientArea` ran first with
-  every MARGINS field at -1. The first screenshot showed a recoloured caption over an opaque
-  body — indistinguishable from a lost bet. S_OK is not evidence; the screenshot was.
-- Probe B and C: the first four runs were taken in a window parked off the desktop, to keep the
-  screen free while the user was studying. They reported ~48ms and 98% dropped frames and were
-  junk. A control probe drawing one label costs 16.35ms visible and 31.64ms hidden — the window
-  manager throttles what it does not show. Expect the same on an inactive virtual desktop.
-- I also argued, at length and wrongly, that "p95 <= 16.7ms" was unreachable by construction.
-  That rested on assuming a 60Hz panel. This one is 144Hz; the 16.00ms "baseline" was JavaFX's
-  idle pulse timer, not a floor. A fast table here measures 4-9ms. Check the refresh rate first.
+- Probe A: Mica needs TWO calls. `DwmSetWindowAttribute(DWMWA_SYSTEMBACKDROP_TYPE)` returns
+  S_OK and paints almost nothing unless `DwmExtendFrameIntoClientArea` ran first at MARGINS -1.
+  Run one showed a recoloured caption over an opaque body — indistinguishable from a lost bet.
+- Probe B and C: the first four runs used a window parked off the desktop, to keep the screen
+  free while the user studied. They reported ~48ms and 98% dropped frames and were junk. A
+  control probe drawing one label costs 16.35ms visible and 31.64ms hidden: the window manager
+  throttles what it does not show, and an inactive virtual desktop should behave the same.
+- I also argued at length, and wrongly, that "p95 <= 16.7ms" was unreachable by construction.
+  That assumed a 60Hz panel; this one is 144Hz, and the 16.00ms "baseline" was JavaFX's idle
+  pulse timer, not a floor. A fast table here measures 4-9ms. Check the refresh rate first.
 - Abandoned: driving sweeps with `TableView.scrollTo`, which rebuilds cells to show a row that
   may already be visible — a gesture nobody performs. Replaced with `VirtualFlow.scrollPixels`
-  (the wheel) and `setPosition` (the thumb). Every sweep now prints how far it actually moved,
-  which is the only reason the second set of numbers can be trusted at all.
+  (wheel) and `setPosition` (thumb), and every sweep now prints how far it actually moved.
 - Numbers: 100k rows meet 60fps with NO headroom (avg 17.07ms). Column ceiling is 500, not the
-  50-100 FACTS guessed — that line was corrected in place with the user's yes. Dragging the
-  vertical scrollbar is a separate ceiling at 200 columns and needs throttling in S03.
-- For S01: both handle routes agree, so the `--add-exports` for com.sun.glass.ui is optional.
-  weka drags 17 jars with illegal automatic module names that jlink will likely fight.
-- Still unapproved, three sessions old: §CAPS `DESIGN 110`.
-- NEXT: run /stage to close S00 and detail S01.
+  50-100 FACTS guessed — corrected in place with the user's yes. Dragging the vertical scrollbar
+  is a separate ceiling at 200 columns and needs throttling in S03.
+- For S01: both handle routes agree, so `--add-exports` for com.sun.glass.ui is optional; weka
+  drags 17 jars with illegal automatic module names that jlink will likely fight.
+- NEXT: run /stage to close S00 and detail S01. Still unapproved, three sessions old and now
+  binding at 108/110: §CAPS `DESIGN 110`.
 
 ## 2026-10-07 — s05 · S00 detailed, and the toolchain proved (wrapped past midnight on 10-08)
 - S00 is CURRENT with 15 tasks. `spike\` is fenced off: a standalone pom OUTSIDE the Maven

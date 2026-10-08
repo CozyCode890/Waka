@@ -88,10 +88,8 @@ D-021, Terminal as a fourth provider is D-022, the four changed marks G-002 / G-
 G-016 are in DESIGN.md §Ledger, the W1 artifact URL is DESIGN.md §Mockups, and "draw first, then
 ask" is the `[pref]` line above. The one unsettled item in that block — the unapproved §CAPS
 `DESIGN 110` — is an open approval and not a fact, so it moved into the s05 SESSION block.
-2026-10-08 — promoted from s04 before dropping it: the `[pref]` line above about process
-vocabulary, which is the one thing in that block not already recorded elsewhere. D-023..D-028
-and the About-music settlement are in DECISIONS.md and already have their own FACTS lines;
-PLAN.md's `## Later` section and the §RULES 5 rewrite live in those files. The unapproved §CAPS
-`DESIGN 110` is an open approval, not a fact, and s05's block still carries it.
+2026-10-08 — promoted from s04 before dropping it: only the `[pref]` process-vocabulary line
+above. The rest of that block is already in DECISIONS.md (D-023..D-028), PLAN.md or CLAUDE.md,
+and the unapproved §CAPS `DESIGN 110` is an open approval, not a fact — s05's block carries it.
 <!-- /wrap lists here which SESSION.md lines became facts, so nothing is dropped silently.
      Shape: 2026-10-06 — promoted from s01: [env] ..., [proj] ... -->
