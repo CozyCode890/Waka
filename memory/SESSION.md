@@ -9,6 +9,31 @@ HARD RULE : before dropping the third block, promote anything still true into FA
 
 # Sessions
 
+## 2026-10-08 — s06 · S00 executed end to end; two bets nearly recorded wrong
+- All 15 tasks done, all three exit tests pass, committed as 2301e3a. S00 is ready for /stage.
+- Probe A: Mica needs TWO calls, not one. `DwmSetWindowAttribute(DWMWA_SYSTEMBACKDROP_TYPE)`
+  returns S_OK and paints almost nothing unless `DwmExtendFrameIntoClientArea` ran first with
+  every MARGINS field at -1. The first screenshot showed a recoloured caption over an opaque
+  body — indistinguishable from a lost bet. S_OK is not evidence; the screenshot was.
+- Probe B and C: the first four runs were taken in a window parked off the desktop, to keep the
+  screen free while the user was studying. They reported ~48ms and 98% dropped frames and were
+  junk. A control probe drawing one label costs 16.35ms visible and 31.64ms hidden — the window
+  manager throttles what it does not show. Expect the same on an inactive virtual desktop.
+- I also argued, at length and wrongly, that "p95 <= 16.7ms" was unreachable by construction.
+  That rested on assuming a 60Hz panel. This one is 144Hz; the 16.00ms "baseline" was JavaFX's
+  idle pulse timer, not a floor. A fast table here measures 4-9ms. Check the refresh rate first.
+- Abandoned: driving sweeps with `TableView.scrollTo`, which rebuilds cells to show a row that
+  may already be visible — a gesture nobody performs. Replaced with `VirtualFlow.scrollPixels`
+  (the wheel) and `setPosition` (the thumb). Every sweep now prints how far it actually moved,
+  which is the only reason the second set of numbers can be trusted at all.
+- Numbers: 100k rows meet 60fps with NO headroom (avg 17.07ms). Column ceiling is 500, not the
+  50-100 FACTS guessed — that line was corrected in place with the user's yes. Dragging the
+  vertical scrollbar is a separate ceiling at 200 columns and needs throttling in S03.
+- For S01: both handle routes agree, so the `--add-exports` for com.sun.glass.ui is optional.
+  weka drags 17 jars with illegal automatic module names that jlink will likely fight.
+- Still unapproved, three sessions old: §CAPS `DESIGN 110`.
+- NEXT: run /stage to close S00 and detail S01.
+
 ## 2026-10-07 — s05 · S00 detailed, and the toolchain proved (wrapped past midnight on 10-08)
 - S00 is CURRENT with 15 tasks. `spike\` is fenced off: a standalone pom OUTSIDE the Maven
   reactor that outlives the stage, so JavaFX 28 can be re-tested in 20 minutes. `core\ app\
@@ -31,23 +56,3 @@ HARD RULE : before dropping the third block, promote anything still true into FA
   DESIGN.md has no cap at all and it sits at 108 — but it never got its own yes.
 - NEXT: S00-T04, write `spike\pom.xml`, then T02's `mvn wrapper:wrapper` inside it at once.
 
-## 2026-10-07 — s04 · eleven user standards recorded before S00 was planned
-- The user stopped the S00 kickoff to hand over eleven standing requirements. All eleven are in
-  memory, nothing was left in chat, and ASK ended at 0.
-- D-023..D-028: all-English code in plain words, clearer beating shorter; a language pack from
-  screen one, English the only v1 pack; the app named **Waka** (artifactId `waka`); no modal
-  dialogs, only reparentable hosted panels; Weka Output as collapsible, headed run blocks.
-- The one real fight was the About music: the user wanted the mp3 bundled, refused on the facts
-  — a copyrighted recording in a public GPLv3 repo makes the distribution non-redistributable.
-  Settled on a player over a user-supplied `assets\audio\` file, empty dir, `javafx.media` in.
-- PLAN.md unfroze for 13 lines, approved one by one, including `## Later — only if v1 ships`:
-  winget · repeated resampling with seed sweeps and a distribution plot · settings.json. It
-  sits right after §NON-goals so whoever reads "Experimenter. Not in v1" sees it is wanted.
-- CLAUDE.md §RULES 5 rewritten, not added to: it said "do not block, note it and move on", the
-  opposite of the new rule. I claimed the 85-line cap forced the swap; it did not, the file was
-  65/85 — right call, wrong reason given.
-- s03's lesson repeated: asked which wave draws About, got "I don't know what mockup and wave
-  mean", from the user who graded 18 marks a day earlier. Draw first covers process words too.
-- Still unapproved from s03: §CAPS `DESIGN 110`.
-- NEXT: /stage S00 only — now also artifactId `waka`, `javafx.media` in the image, an English
-  resource bundle from the first screen, About queued into W4.

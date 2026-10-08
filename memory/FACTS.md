@@ -72,6 +72,7 @@ file name — so a later session can grep for that name and actually find this l
 [gotcha] Dragging a TableView's vertical scrollbar rebuilds every visible cell in every visible column, so it collapses at 200 columns — far below the 500-column scrolling ceiling. Throttle the drag, do not just cap the columns — 2026-10-08
 [gotcha] weka-stable drags 17 transitive jars whose automatic module names are illegal (netlib-native_* contain `native`, java-cup contains `11b`); javafx-maven-plugin drops them from the module path with a warning, and S01's jlink should expect the same fight — 2026-10-08
 [gotcha] --enable-native-access=ALL-UNNAMED does not cover a named module; javafx.graphics loads its own natives and has to be listed by name as well — 2026-10-08
+[pref] Process vocabulary fails the same way UI vocabulary does: "mockup", "wave" and "stage" each had to be shown before the user could answer one. Demonstrate the thing, then ask — 2026-10-08
 
 ## §Promoted
 2026-10-07 — promoted from s01 before dropping it: the three "known holes" lines became the two
@@ -87,5 +88,10 @@ D-021, Terminal as a fourth provider is D-022, the four changed marks G-002 / G-
 G-016 are in DESIGN.md §Ledger, the W1 artifact URL is DESIGN.md §Mockups, and "draw first, then
 ask" is the `[pref]` line above. The one unsettled item in that block — the unapproved §CAPS
 `DESIGN 110` — is an open approval and not a fact, so it moved into the s05 SESSION block.
+2026-10-08 — promoted from s04 before dropping it: the `[pref]` line above about process
+vocabulary, which is the one thing in that block not already recorded elsewhere. D-023..D-028
+and the About-music settlement are in DECISIONS.md and already have their own FACTS lines;
+PLAN.md's `## Later` section and the §RULES 5 rewrite live in those files. The unapproved §CAPS
+`DESIGN 110` is an open approval, not a fact, and s05's block still carries it.
 <!-- /wrap lists here which SESSION.md lines became facts, so nothing is dropped silently.
      Shape: 2026-10-06 — promoted from s01: [env] ..., [proj] ... -->

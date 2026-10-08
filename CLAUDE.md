@@ -6,10 +6,10 @@ Before your first read of every request, print one line: `row: <name> -> <files>
 
 ## §STATE
 ```
-phase:   EXECUTING       # PLANNING > STAGING > DETAILING > EXECUTING > CLOSING > REPLANNING
-stage:   1/7 S00 CURRENT # T01+T03 done, T02 install done; wrapper + T04..T15 remain
+phase:   CLOSING         # PLANNING > STAGING > DETAILING > EXECUTING > CLOSING > REPLANNING
+stage:   1/7 S00 DONE    # all 15 tasks, all 3 exit tests pass; committed 2301e3a 2026-10-08
 design:  W1 done         # shell graded 2026-10-07; W2 (options panel) due S02, host model pre-set
-NEXT:    Write spike\pom.xml for S00-T04 — JavaFX plain `27`, AtlantaFX 3.0.0 — then T02's mvnw.
+NEXT:    Run /stage to close S00 and detail S01 — the shell, jpackage, and AtlantaFX's real tokens.
 ASK:     0               # count of lines under memory/CURRENT.md §Open questions
 updated: 2026-10-08
 ```
