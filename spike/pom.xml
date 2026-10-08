@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>waka</groupId>
+  <artifactId>waka-spike</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <packaging>jar</packaging>
+
+  <name>Waka stack probes</name>
+  <description>
+    Throwaway probes for stage S00. This pom is standalone on purpose: spike/ is not a module of
+    the Waka reactor, so nothing written here can leak into the shipped application. S01 creates
+    the real root pom next to this directory, not above it.
+  </description>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <maven.compiler.release>25</maven.compiler.release>
+
+    <!-- Exact version strings confirmed against Maven Central in S00-T03. JavaFX GA on the 27
+         line is the plain string 27: no 27.0.1 exists. AtlantaFX 3.x contains only 3.0.0. -->
+    <javafx.version>27</javafx.version>
+    <atlantafx.version>3.0.0</atlantafx.version>
+    <weka.version>3.8.7</weka.version>
+    <commons-compress.version>1.28.0</commons-compress.version>
+
+    <!-- Which probe StackProbe runs. Override on the command line, for example -Dprobe=b
+           menu  open the window with three buttons and leave it open. The Mica check needs eyes.
+           b     100000 rows by 10 columns, scripted scroll sweep, print frame times, exit.
+           c     2000 attribute rows and the column sweep, print every number, exit. -->
+    <probe>menu</probe>
+    <!-- dark or light. The caption colour has to match the theme, so both are worth looking at. -->
+    <theme>dark</theme>
+    <!-- true parks the window off the visible desktop, so a sweep that runs for minutes does not
+         sit on top of whatever the person at the keyboard is doing. -->
+    <offscreen>false</offscreen>
+    <!-- atlantafx or none. "none" leaves JavaFX on Modena, which separates the cost of the
+         theme from the cost of the table. -->
+    <stylesheet>atlantafx</stylesheet>
+    <!-- Probe B's row count, so the cost can be told apart from the size of the data. -->
+    <rows>100000</rows>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.openjfx</groupId>
+      <artifactId>javafx-controls</artifactId>
+      <version>${javafx.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.openjfx</groupId>
+      <artifactId>javafx-graphics</artifactId>
+      <version>${javafx.version}</version>
+    </dependency>
+    <dependency>
+      <!-- Not used by any probe. Declared because the About screen needs javafx.media in the
+           jlink image, and a module that does not resolve now will not resolve in S05 either. -->
+      <groupId>org.openjfx</groupId>
+      <artifactId>javafx-media</artifactId>
+      <version>${javafx.version}</version>
+    </dependency>
+
+    <dependency>
+      <!-- Declared only to prove it resolves and that its stylesheet applies. Confirming the
+           token names against DESIGN.md is S01's job, not this stage's. -->
+      <groupId>io.github.mkpaz</groupId>
+      <artifactId>atlantafx-base</artifactId>
+      <version>${atlantafx.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>nz.ac.waikato.cms.weka</groupId>
+      <artifactId>weka-stable</artifactId>
+      <version>${weka.version}</version>
+    </dependency>
+    <dependency>
+      <!-- weka-stable marks this optional, so it is not inherited. Without this line,
+           loading an .arff.gz file fails at runtime and not at build time. -->
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-compress</artifactId>
+      <version>${commons-compress.version}</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.14.0</version>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-wrapper-plugin</artifactId>
+        <version>3.3.2</version>
+        <configuration>
+          <!-- only-script writes mvnw, mvnw.cmd and the properties file, and no jar at all.
+               The repository .gitignore ignores *.jar, so the classic wrapper's jar would be
+               left out of the commit without anyone noticing. -->
+          <type>only-script</type>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.openjfx</groupId>
+        <artifactId>javafx-maven-plugin</artifactId>
+        <version>0.0.8</version>
+        <configuration>
+          <mainClass>waka.spike.StackProbe</mainClass>
+          <options>
+            <!-- MicaWindow calls DwmSetWindowAttribute through java.lang.foreign. Without this
+                 flag JDK 25 still runs but prints a restricted-method warning per call site.
+                 javafx.graphics is named as well because it loads its own native libraries, and
+                 ALL-UNNAMED does not cover a module: the first run warned about exactly that. -->
+            <option>--enable-native-access=ALL-UNNAMED,javafx.graphics</option>
+            <!-- The native window handle comes from com.sun.glass.ui.Window, which this plugin
+                 puts on the module path. MicaWindow falls back to FindWindowW if this flag is
+                 ever removed, which is how we learn what dropping it would cost in S01. -->
+            <option>--add-exports=javafx.graphics/com.sun.glass.ui=ALL-UNNAMED</option>
+            <!-- S00-T07 and T08 read the painter and the GPU out of this log. -->
+            <option>-Dprism.verbose=true</option>
+            <option>-Dprobe=${probe}</option>
+            <option>-Dtheme=${theme}</option>
+            <option>-Doffscreen=${offscreen}</option>
+            <option>-Dstylesheet=${stylesheet}</option>
+            <option>-Drows=${rows}</option>
+          </options>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>3.5.1</version>
+        <configuration>
+          <mainClass>waka.spike.WekaLinkProbe</mainClass>
+          <systemProperties>
+            <systemProperty>
+              <!-- FACTS warns that some Weka entry points boot Swing inside our process. With
+                   headless on, such an attempt throws instead of quietly succeeding here and
+                   failing in S02. -->
+              <key>java.awt.headless</key>
+              <value>true</value>
+            </systemProperty>
+          </systemProperties>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

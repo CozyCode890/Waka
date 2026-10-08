@@ -39,7 +39,7 @@ file name — so a later session can grep for that name and actually find this l
 [gotcha] WekaPackageManager.loadPackages(boolean) calls refreshGOEProperties(), which boots KnowledgeFlowApp and Swing file choosers inside our process — always call loadPackages(false, false, false) — 2026-10-06
 [gotcha] StageStyle.TRANSPARENT on Windows forces JavaFX's UploadingPainter unconditionally via WindowStage.needsUpdateWindow(), costing a full-frame GPU readback every frame — use StageStyle.UNIFIED for Mica — 2026-10-06
 [gotcha] -Dprism.forceUploadingPainter caps JavaFX at 60fps and is not needed from JavaFX 27, where the D3DResourceManager BackBufferFormat fix landed — 2026-10-06
-[gotcha] JavaFX TableView degrades around 50-100 columns and is unusable past 500 because TableColumn cells are not pooled; horizontal virtualization only engages when setFixedCellSize is set — 2026-10-06
+[gotcha] JavaFX TableView horizontal virtualization only engages when setFixedCellSize is set; measured 2026-10-08 at 10k rows it is fine to 500 columns, degraded at 1000 (opens in 4.2s), unusable at 2000 (opens in 10.6s) — 2026-10-08 supersedes the "50-100 columns" guess of 2026-10-06
 [gotcha] Weka package classes are invisible to Class.forName — use WekaPackageClassLoaderManager.forName and SerializationHelper.getObjectInputStream for models built with package schemes — 2026-10-06
 [gotcha] weka.Run prints a numbered menu and blocks on stdin for an ambiguous scheme name — always pass the fully-qualified class name from our side — 2026-10-06
 [proj] weka-stable marks commons-compress optional so it is not inherited transitively; declare it explicitly or .arff.gz and .arff.bz2 loading fails at runtime — 2026-10-06
@@ -63,6 +63,15 @@ file name — so a later session can grep for that name and actually find this l
 [env] Maven 3.10.0 came from scoop and lives at C:\Users\LETHAIDUCTUNG\scoop\apps\maven\current, whose bin is on User PATH; there is no mvn shim under scoop\shims — 2026-10-07
 [gotcha] winget publishes no `Apache.Maven` package, and a User PATH entry is appended AFTER Machine PATH so it can never shadow a Machine-scope JDK — selecting a JDK without admin means JAVA_HOME, not PATH — 2026-10-07
 [proj] JavaFX GA on the 27 line is the plain version string `27` (no 27.0.1 exists); AtlantaFX 3.x contains only 3.0.0; the `win`-classified jars needed at runtime resolve for javafx-base, -controls, -graphics and -media at 27 — 2026-10-07
+[env] Display is 1920x1080 at 144Hz on an NVIDIA GeForce RTX 4050 Laptop GPU, driver nvldumdx.dll 32.0.16.1742, running JavaFX through D3D9Ex — 2026-10-08
+[proj] Mica on StageStyle.UNIFIED is confirmed working on JavaFX 27 with com.sun.prism.d3d.D3DPipeline, so D-014 holds and no fallback is needed — 2026-10-08
+[gotcha] DwmSetWindowAttribute(DWMWA_SYSTEMBACKDROP_TYPE) returns S_OK and still shows no Mica unless DwmExtendFrameIntoClientArea is called first with every MARGINS field at -1; without it only the caption recolours — 2026-10-08
+[gotcha] A JavaFX window parked off the desktop is throttled by the window manager — identical work costs 16.35ms visible and 31.64ms hidden, so hidden-window frame times are junk; expect the same on an inactive Windows virtual desktop, which the shell cloaks — 2026-10-08
+[gotcha] With nothing dirty JavaFX falls back to a 60Hz pulse timer, so an idle AnimationTimer baseline always reads ~16.00ms; that is not a floor, and on this 144Hz panel a fast TableView measures 4-9ms — 2026-10-08
+[proj] 100,000 rows by 10 columns scrolls at avg 17.07ms (58.6fps), p95 28.64ms: it meets 60fps with no headroom left, so S03 must not add per-frame work to the row path — 2026-10-08
+[gotcha] Dragging a TableView's vertical scrollbar rebuilds every visible cell in every visible column, so it collapses at 200 columns — far below the 500-column scrolling ceiling. Throttle the drag, do not just cap the columns — 2026-10-08
+[gotcha] weka-stable drags 17 transitive jars whose automatic module names are illegal (netlib-native_* contain `native`, java-cup contains `11b`); javafx-maven-plugin drops them from the module path with a warning, and S01's jlink should expect the same fight — 2026-10-08
+[gotcha] --enable-native-access=ALL-UNNAMED does not cover a named module; javafx.graphics loads its own natives and has to be listed by name as well — 2026-10-08
 
 ## §Promoted
 2026-10-07 — promoted from s01 before dropping it: the three "known holes" lines became the two
