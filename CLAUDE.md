@@ -7,10 +7,10 @@ Before your first read of every request, print one line: `row: <name> -> <files>
 ## §STATE
 ```
 phase:   EXECUTING       # PLANNING > STAGING > DETAILING > EXECUTING > CLOSING > REPLANNING
-stage:   2/7 S01 CURRENT # the shell, 32 tasks, 0 done. Nothing in src/ yet
-design:  W1 done         # W2 (options panel) due S02; S01-T09 fixes §Colour's AtlantaFX column
+stage:   2/7 S01 CURRENT # the shell, 32/32 tasks, T01-T12 DONE. Reactor + Mica window + harness
+design:  W1 done         # W2 due S02; §Colour's AtlantaFX column VERIFIED in T09, all 13 right
 repo:    PUBLIC          # github.com/CozyCode890/Waka — memory/ public on purpose; README ask-first
-NEXT:    Write the root pom.xml (S01-T01): modules core/app/dist, release 25, versions pinned once.
+NEXT:    S01-T13 shell skeleton: caption 32 · rail 48 RIGHT · side 260 · status 22 · doc centre.
 ASK:     0               # count of lines under memory/CURRENT.md §Open questions
 updated: 2026-10-08
 ```

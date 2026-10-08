@@ -51,15 +51,15 @@ the root pom. `org.osgi.core` excluded from testfx-core. Two findings promoted t
       not merely drop the blur. This is half of exit test 2.
 - [x] S01-T09 Read AtlantaFX 3.0.0's real token names and correct DESIGN §Colour's guess column
       in place — DESIGN's own note pre-authorises exactly this edit and nothing more.
-- [~] S01-T10 `waka.css` over AtlantaFX: every §Geometry and §Colour token as a CSS variable,
+- [x] S01-T10 `waka.css` over AtlantaFX: every §Geometry and §Colour token as a CSS variable,
       in four combinations — light/dark × Mica on/off. No webfont (§Type).
 
 T09: all 13 guessed names were RIGHT; §Colour's caveat is now a verification, `--cls1..3` maps to
 `-color-chart-1..3`, two §Ledger rows record it, base theme Primer.
-T10 is `[~]` because the task's wording asks for something JavaFX cannot do (see FACTS): §Geometry
-is `waka.app.Geometry` in Java, not CSS, and §Type's `.06em` tracking is DROPPED outright. §Colour
-is complete and all four combinations are proven by test. The open item is for the user, under
-§Open questions: whether losing that tracking is acceptable.
+T10 asks for two things JavaFX cannot do (see FACTS), both now settled: §Geometry is
+`waka.app.Geometry` in Java rather than CSS, and §Type's `.06em` panel-header tracking is DROPPED
+— shown to the user at size and at 4x, dropped on their call, superseded in §Ledger with the
+reason. §Colour is complete and all four combinations are proven by test.
 
 ### The hidden-test harness — build it before the layout, not after
 - [x] S01-T11 JUnit 5 + TestFX. The stage is created at -4000,-4000 and is never visible
@@ -156,10 +156,13 @@ ThemeService would otherwise each copy) and `Geometry` (because §Geometry canno
 Also edited: memory\DESIGN.md §Colour (the AtlantaFX column only), memory\SOURCE.md.
 
 ## Open questions
-1. §Type's panel-header tracking (`label 11/600 .06em caps`) cannot be applied — JavaFX CSS has
-   no letter-spacing. Accept 11/600 caps with no tracking, or change the treatment? It is a
-   LOCKED §Type number, so it is superseded in §Ledger, not overwritten. Blocks closing T10.
+None open.
 
-Answered in s07, 2026-10-08: the default accent stays DESIGN's locked `#4CC2FF` dark / `#005FB8`
-light, because the Windows accent often fails contrast against `--card` and would hand the OS
-control of whether this app is readable; and icons are Ikonli + Feather (D-035).
+Answered 2026-10-08, this session: JUnit stays on 5.14.4 rather than 6.1.3, because TestFX 4.0.18
+predates JUnit 6 and the harness it underpins is T11/T12's own deliverable. §Type's panel-header
+tracking is dropped (§Ledger `type`). ThemeService reads the registry through FFM `RegGetValueW`,
+in the same style as the DWM calls, rather than spawning `reg query` on every window focus.
+
+Answered in s07: the default accent stays DESIGN's locked `#4CC2FF` dark / `#005FB8` light,
+because the Windows accent often fails contrast against `--card` and would hand the OS control of
+whether this app is readable; and icons are Ikonli + Feather (D-035).
