@@ -34,39 +34,58 @@ tabs open and close around a placeholder. Apply/Stop and the option string are d
       `javafx.*` import cannot compile. Declares weka-stable + commons-compress (D-033).
 - [x] S01-T04 `app`: JavaFX + AtlantaFX, depends on `core`. `dist`: packaging only, no sources.
 
-Reactor built, `.\mvnw -B verify` green, order `waka > core > app > dist`. `--ignored` named no
-wrapper file. Versions FACTS had not already fixed, resolved against Central 2026-10-08: Ikonli
-`12.4.0`, JUnit `5.14.4`, TestFX `4.0.18`, commons-compress `1.28.0`; plugins compiler `3.14.0`
-(4.x is still beta), surefire `3.6.0`, wrapper `3.3.4`, javafx `0.0.8`. JUnit stays on 5 though
-Central is at 6.1.3 — asked and answered, reason written in the root pom.
-Three findings, each of which bites later rather than now:
-- `maven-wrapper-plugin` 3.3.4 does not read `-Dtype` from the command line; it warns "Parameter
-  'type' is unknown". `only-script` happened because pluginManagement sets it. T02's phrasing
-  names a flag that does nothing — the pom is what decides.
-- `testfx-junit5` 4.0.18 declares NO Jupiter dependency, only testfx-core + hamcrest + assertj.
-  So nothing can conflict at resolve time in T11, and a wrong Jupiter would instead fail at
-  class-load time, which is the harder failure to read.
-- `testfx-core` wants `org.osgi:org.osgi.core` at runtime scope; excluded in the root pom.
+Reactor built, order `waka > core > app > dist`, `--ignored` named no wrapper file. Versions FACTS
+had not fixed, resolved against Central: Ikonli `12.4.0`, JUnit `5.14.4`, TestFX `4.0.18`,
+commons-compress `1.28.0`; plugins compiler `3.14.0` (4.x still beta), surefire `3.6.0`, wrapper
+`3.3.4`, javafx `0.0.8`. JUnit stays on 5 though Central is at 6.1.3 — asked, answered, reason in
+the root pom. `org.osgi.core` excluded from testfx-core. Two findings promoted to FACTS.
 
 ### The window and the material
-- [ ] S01-T05 `app` main class: one `StageStyle.UNIFIED` stage. DWM sequence lifted from
+- [x] S01-T05 `app` main class: one `StageStyle.UNIFIED` stage. DWM sequence lifted from
       `spike\MicaWindow.java` — `DwmExtendFrameIntoClientArea` at MARGINS -1 FIRST, then
       `DWMWA_SYSTEMBACKDROP_TYPE` (FACTS). Handle via `FindWindowW`, no `--add-exports` (D-034).
-- [ ] S01-T06 Caption recoloured per theme through `DWMWA_CAPTION_COLOR` (D-014).
-- [ ] S01-T07 Theme service: auto / light / dark. Auto reads `AppsUseLightTheme` under
+- [x] S01-T06 Caption recoloured per theme through `DWMWA_CAPTION_COLOR` (D-014).
+- [x] S01-T07 Theme service: auto / light / dark. Auto reads `AppsUseLightTheme` under
       `HKCU:\...\Themes\Personalize` at start and re-reads on window focus — no native hook.
-- [ ] S01-T08 Mica on/off. OFF swaps to the solid Layer fills in DESIGN §Colour (G-016); it does
+- [x] S01-T08 Mica on/off. OFF swaps to the solid Layer fills in DESIGN §Colour (G-016); it does
       not merely drop the blur. This is half of exit test 2.
-- [ ] S01-T09 Read AtlantaFX 3.0.0's real token names and correct DESIGN §Colour's guess column
+- [x] S01-T09 Read AtlantaFX 3.0.0's real token names and correct DESIGN §Colour's guess column
       in place — DESIGN's own note pre-authorises exactly this edit and nothing more.
-- [ ] S01-T10 `waka.css` over AtlantaFX: every §Geometry and §Colour token as a CSS variable,
+- [~] S01-T10 `waka.css` over AtlantaFX: every §Geometry and §Colour token as a CSS variable,
       in four combinations — light/dark × Mica on/off. No webfont (§Type).
 
+T09: all 13 guessed names were RIGHT; §Colour's caveat is now a verification, `--cls1..3` maps to
+`-color-chart-1..3`, two §Ledger rows record it, base theme Primer.
+T10 is `[~]` because the task's wording asks for something JavaFX cannot do (see FACTS): §Geometry
+is `waka.app.Geometry` in Java, not CSS, and §Type's `.06em` tracking is DROPPED outright. §Colour
+is complete and all four combinations are proven by test. The open item is for the user, under
+§Open questions: whether losing that tracking is acceptable.
+
 ### The hidden-test harness — build it before the layout, not after
-- [ ] S01-T11 JUnit 5 + TestFX. The stage is created at -4000,-4000 and is never visible
+- [x] S01-T11 JUnit 5 + TestFX. The stage is created at -4000,-4000 and is never visible
       (D-030). `-Dwaka.visible=true` brings it on screen and is passed ONLY after asking.
-- [ ] S01-T12 One smoke test that fails loudly if the harness ever starts a visible window, so
+- [x] S01-T12 One smoke test that fails loudly if the harness ever starts a visible window, so
       the rule is enforced by the build and not by memory.
+
+8 tests green, nothing on screen. `OffScreenApplicationTest` launches the REAL `WakaApplication`,
+so the tests drive the production startup path rather than one written for tests. The TestFX trap
+it hit is now a FACTS line. T12 checks every window in `Window.getWindows()`, not only Waka's —
+because the first thing it caught was TestFX's own visible stage — and a third test proves the
+guard answers YES for a window at the screen's origin, since a guard that has only ever reported
+"nothing to see" has not been shown to work.
+Proven by test, not by eye: all four DWM calls return S_OK on an off-screen UNIFIED stage; the
+four combinations each reach both the stylesheet and the native window; `RegGetValueW` through
+FFM agrees with `reg.exe` on `AppsUseLightTheme`; and `ColourTokenTest` reads the computed fill
+off a real node, so §Colour is proven to ARRIVE and not merely to be written down.
+That third test earned itself immediately. The first `waka.css` looked correct and was inert:
+`stage.show()` is when JavaFX first applies a scene stylesheet, and the root did not carry
+`theme-dark` yet, so no `-waka-*` token was defined and every rule using one died with "String
+cannot be cast to Paint" — logged as a warning, swallowed, window painted unstyled. The style
+classes now go on BEFORE `show()`; `applyStylesheet` and `applyWindowMaterial` are split because
+only the second needs a window handle. Promote this to FACTS at /wrap: FACTS is at 90/90 and has
+no room today. Remaining build noise, benign: JavaFX warns that it was loaded from an unnamed
+module, which is what provided scope on the test classpath means; T27's jlink image fixes it.
+NOT proven: that any of it LOOKS right. That needs the screen, and it is T29's job.
 
 ### The layout
 - [ ] S01-T13 Shell skeleton: native caption 32px (not ours), rail 48px on the RIGHT, side panel
@@ -118,11 +137,16 @@ Three findings, each of which bites later rather than now:
 - [ ] S01-T32 Promote facts, append decisions, commit.
 
 ## Files to touch
-`src\` does not exist yet — every path below is created by this stage.
+Written so far: the root pom, the wrapper's three files, all three module poms,
+`core\...\package-info.java`, and in `app` — `WakaApplication` `MicaWindow` `ThemeService`
+`WindowsApi` `Geometry` + `waka.css` + the two test classes and their `OffScreenApplicationTest`.
+Two files the plan below did not name: `WindowsApi` (the FFM linking, which MicaWindow and
+ThemeService would otherwise each copy) and `Geometry` (because §Geometry cannot be CSS).
 
     pom.xml · mvnw · mvnw.cmd · .mvn\wrapper\maven-wrapper.properties
     core\pom.xml  core\src\main\java\waka\core\{settings,keymap,commands,text}\*.java
-    app\pom.xml   app\src\main\java\waka\app\{WakaApplication,MicaWindow,ThemeService}.java
+    app\pom.xml   app\src\main\java\waka\app\{WakaApplication,MicaWindow,ThemeService,
+                                              WindowsApi,Geometry}.java
                   app\src\main\java\waka\app\shell\{Rail,SidePanel,DocumentTabs,SegmentedBar,
                                                     Toolbar,BottomPanel,StatusBar,UndoToast}.java
                   app\src\main\java\waka\app\palette\CommandPalette.java
@@ -132,9 +156,10 @@ Three findings, each of which bites later rather than now:
 Also edited: memory\DESIGN.md §Colour (the AtlantaFX column only), memory\SOURCE.md.
 
 ## Open questions
-None open. Both were answered in session s07, 2026-10-08:
-1. The default accent stays DESIGN's locked `#4CC2FF` dark / `#005FB8` light. The Windows accent
-   is not followed, because it is often a colour that fails contrast against `--card` and that
-   would hand the OS control of whether this app is readable. Changing it stays a Settings item.
-2. Icons are Ikonli + Feather (MIT, GPLv3-compatible, the set AtlantaFX's own samples use) —
-   D-035. Rejected: hand-drawn SVG paths, and Microsoft's Fluent System Icons.
+1. §Type's panel-header tracking (`label 11/600 .06em caps`) cannot be applied — JavaFX CSS has
+   no letter-spacing. Accept 11/600 caps with no tracking, or change the treatment? It is a
+   LOCKED §Type number, so it is superseded in §Ledger, not overwritten. Blocks closing T10.
+
+Answered in s07, 2026-10-08: the default accent stays DESIGN's locked `#4CC2FF` dark / `#005FB8`
+light, because the Windows accent often fails contrast against `--card` and would hand the OS
+control of whether this app is readable; and icons are Ikonli + Feather (D-035).

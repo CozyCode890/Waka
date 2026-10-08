@@ -41,10 +41,12 @@ Numbered marks (`G-NNN`) drawn on the page carry the question; the user answers 
 | `--sp` | 4px | every gap and pad is a multiple of 4 |
 
 ## §Colour — LOCKED 2026-10-07
-Real Fluent 2 values. The AtlantaFX column is a **guess, unverified** — AtlantaFX 3.0.0 is not
-on this machine. S01 confirms the names and corrects this table; it does not re-guess them.
+Real Fluent 2 values. The AtlantaFX column was **verified 2026-10-08** (S01-T09) by reading
+`atlantafx-base-3.0.0.jar`'s own `primer-dark.css`: all thirteen guessed names exist exactly as
+written. The palette is declared on `.root`, so a scene stylesheet overrides it whatever its
+specificity — AtlantaFX arrives as the user-agent stylesheet, which JavaFX ranks lowest.
 
-| token | dark | light | role | AtlantaFX target (verify S01) |
+| token | dark | light | role | AtlantaFX target (verified 2026-10-08) |
 |---|---|---|---|---|
 | `--mica` | `#202020` | `#F3F3F3` | opaque base when Mica is off | `-color-bg-default` |
 | `--card` | `#FFF 5.12%` | `#FFF 70%` | cards, active document tab | `-color-bg-subtle` |
@@ -57,7 +59,7 @@ on this machine. S01 confirms the names and corrects this table; it does not re-
 | `--accent` | `#4CC2FF` | `#005FB8` | selection, focus, primary action | `-color-accent-emphasis` |
 | `--accent-sub` | accent 16% | accent 10% | selected row, status bar tint | `-color-accent-muted` |
 | `--ok/warn/bad` | `#6CCB5F` `#FCE100` `#FF99A4` | `#0F7B0F` `#9D5D00` `#C42B1C` | semantic state | `-color-{success,warning,danger}-emphasis` |
-| `--cls1..3` | `#5B8FF9` `#E8684A` `#5AD8A6` | `#3A6FD8` `#C9502F` `#2E9E74` | class values in plots | app-owned, no equivalent |
+| `--cls1..3` | `#5B8FF9` `#E8684A` `#5AD8A6` | `#3A6FD8` `#C9502F` `#2E9E74` | class values in plots | `-color-chart-1..3`, values overridden |
 
 Mica OFF swaps to solid Layer fills, it does not simply drop the blur: dark `--card` 9.8%,
 `--ctl` 8.4%, `--divider` 11.8%; light `--card` `#FAFAFA`, `--ctl` `#FDFDFD`, `--divider` 11.2%.
@@ -119,3 +121,5 @@ theme | 2026-10-07 | default auto, follows Windows
 dialog | 2026-10-07 | **user's own design, pre-graded** — no modal dialogs; hosted panels like VS Code Settings, header carries close · pop out to a window · open as a tab (D-027). W2 draws it, it does not re-ask it
 output | 2026-10-07 | **user's own design, pre-graded** — Weka Output is collapsible run blocks; each header states dataset file · scheme · full option string · start time (D-028)
 about | 2026-10-07 | About screen — Weka attribution, GPLv3 notice, player for "Waka Waka" over a user-supplied file in `assets\audio\` (D-026). Drawn in W4 with the package manager
+atlantafx | 2026-10-08 | **not a verdict, a verification** (S01-T09) — all 13 token names in §Colour's last column confirmed present in `atlantafx-base-3.0.0.jar`. Nothing the user graded changed. Base theme chosen: Primer (dark/light), the most neutral of the seven; every graded colour and radius is overridden by `waka.css`, so this choice is one line to revisit
+geometry | 2026-10-08 | **§Geometry cannot be CSS** (S01-T10) — JavaFX looked-up values are colours only, there is no numeric custom property. §Geometry therefore lives in `waka.app.Geometry` as Java constants, which is also the form T13-T20 need for `prefWidth`; §Colour stays in `waka.css`. No graded number changed

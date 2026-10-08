@@ -63,12 +63,13 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <!-- testfx-core alone. testfx-junit5 exists only for its ApplicationExtension and the
+           @Start annotation, and the harness launches the real WakaApplication through FxToolkit
+           instead, so that what the tests drive is the production startup path and not a second
+           one written for tests. The version stays pinned in the root pom for the day a robot
+           test wants it. -->
       <groupId>org.testfx</groupId>
       <artifactId>testfx-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.testfx</groupId>
-      <artifactId>testfx-junit5</artifactId>
     </dependency>
   </dependencies>
 

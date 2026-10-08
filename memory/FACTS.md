@@ -79,6 +79,10 @@ file name — so a later session can grep for that name and actually find this l
 [proj] spike\ has its own standalone pom OUTSIDE the Maven reactor and outlives S00 on purpose — when JavaFX 28 lands, re-run its probes and compare against spike\README.md instead of arguing from memory — 2026-10-07
 [gotcha] `java -version` on this machine answers 21 because Machine PATH wins; any check that a build really runs on JDK 25 must invoke `$env:JAVA_HOME\bin\java`, or it is a permanent false failure — 2026-10-07
 [gotcha] TableView.scrollTo rebuilds cells to reach a row that may already be visible, a gesture no user performs, so it makes a scroll benchmark meaningless — drive sweeps with VirtualFlow.scrollPixels (wheel) and setPosition (thumb), and print how far each sweep actually moved — 2026-10-08
+[gotcha] TestFX FxToolkit.registerPrimaryStage() SHOWS a stage of its own, so handing that stage to an Application whose start() calls Stage.initStyle throws "Cannot set style once stage has been set visible" — call FxToolkit.registerStage(Stage::new) before setupApplication, and park that TestFX stage too, because it is itself a visible window — 2026-10-08
+[gotcha] JavaFX CSS looked-up values resolve COLOURS only — there is no numeric custom property, no letter-spacing and no text-transform — so DESIGN §Geometry lives in waka.app.Geometry as Java constants and §Type's .06em tracking cannot be expressed at all — 2026-10-08
+[proj] testfx-junit5 declares no JUnit Jupiter dependency of its own, only testfx-core plus hamcrest and assertj, so Jupiter's version is ours to supply and a mismatch fails at class-load time instead of at resolve time — 2026-10-08
+[gotcha] maven-wrapper-plugin 3.3.4 ignores -Dtype on the command line and warns "Parameter 'type' is unknown"; only-script must be set in pluginManagement, and .gitignore's *.jar rule would silently drop a classic wrapper jar from the commit — 2026-10-08
 
 ## §Promoted
 2026-10-07 — s01: two `[gotcha]` lines + the `[proj]` SOURCE.md line; the rest was already D-001..D-008.

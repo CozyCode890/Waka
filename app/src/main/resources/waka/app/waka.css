@@ -1,0 +1,229 @@
+/*
+ * Waka's own stylesheet, laid over AtlantaFX.
+ *
+ * AtlantaFX arrives as the user-agent stylesheet, which JavaFX ranks below every scene
+ * stylesheet, so everything here wins without needing to out-specify anything. AtlantaFX
+ * declares its palette on `.root`; this file redeclares the thirteen tokens DESIGN.md §Colour
+ * names, so every AtlantaFX control is drawn in Fluent colours without being restyled one by one.
+ *
+ * Two things in DESIGN.md cannot live in this file, and neither is a shortcut:
+ *
+ *   - §Geometry. JavaFX's looked-up values resolve COLOURS only; there is no numeric custom
+ *     property, so `-waka-h-doctab: 35px` cannot be written. §Geometry is in `waka.app.Geometry`
+ *     as Java constants, which is the form D-031's hand-built regions need anyway.
+ *   - §Type's letter spacing. JavaFX CSS has no letter-spacing property and no text-transform.
+ *     The `.06em` tracking on panel headers is therefore NOT applied, and the caps come from the
+ *     language pack writing the string in capitals, not from this file. Recorded in
+ *     DESIGN.md §Ledger rather than quietly dropped.
+ *
+ * Every colour below is DESIGN.md §Colour, LOCKED 2026-10-07. Percentages there are written as
+ * `#FFF 5.12%`, which is `rgba(255, 255, 255, 0.0512)` here.
+ */
+
+/* ============================================================ §Type ======================= */
+
+.root {
+    /* No webfont, ever: this application renders in the Windows system stack, and the mockups
+       were graded in it. Body is 14/400. */
+    -fx-font-family: "Segoe UI Variable Text", "Segoe UI", sans-serif;
+    -fx-font-size: 14px;
+}
+
+.waka-body-small {
+    -fx-font-size: 13px;
+}
+
+.waka-caption {
+    -fx-font-size: 12px;
+}
+
+.waka-panel-header {
+    /* 11/600. The caps and the .06em tracking are not expressible in JavaFX CSS - see the file
+       header. The string arrives already in capitals from the language pack. */
+    -fx-font-size: 11px;
+    -fx-font-weight: 600;
+}
+
+.waka-subtitle {
+    /* Display, not Text, at this size - that is what the Variable family is for. */
+    -fx-font-family: "Segoe UI Variable Display", "Segoe UI", sans-serif;
+    -fx-font-size: 20px;
+    -fx-font-weight: 600;
+}
+
+.waka-mono {
+    /* Weka's verbatim output and the option string. 12/1.55: JavaFX expresses leading as extra
+       space between lines, so 1.55 x 12px = 18.6px total means 6.6px of added spacing. */
+    -fx-font-family: "Cascadia Mono", "Consolas", monospace;
+    -fx-font-size: 12px;
+    -fx-line-spacing: 6.6px;
+}
+
+/* ====================================================== §Colour, dark ===================== */
+
+.theme-dark {
+    -waka-mica: #202020;
+    -waka-card: rgba(255, 255, 255, 0.0512);
+    -waka-ctl: rgba(255, 255, 255, 0.0605);
+    -waka-divider: rgba(255, 255, 255, 0.0837);
+    -waka-stroke-ctl: rgba(255, 255, 255, 0.0698);
+
+    -waka-fg1: #ffffff;
+    -waka-fg2: rgba(255, 255, 255, 0.786);
+    -waka-fg3: rgba(255, 255, 255, 0.5442);
+
+    -waka-accent: #4cc2ff;
+    -waka-accent-sub: rgba(76, 194, 255, 0.16);
+
+    -waka-ok: #6ccb5f;
+    -waka-warn: #fce100;
+    -waka-bad: #ff99a4;
+
+    -waka-cls1: #5b8ff9;
+    -waka-cls2: #e8684a;
+    -waka-cls3: #5ad8a6;
+}
+
+/* ===================================================== §Colour, light ===================== */
+
+.theme-light {
+    -waka-mica: #f3f3f3;
+    -waka-card: rgba(255, 255, 255, 0.7);
+    -waka-ctl: rgba(255, 255, 255, 0.7);
+    -waka-divider: rgba(0, 0, 0, 0.0803);
+    -waka-stroke-ctl: rgba(0, 0, 0, 0.0578);
+
+    -waka-fg1: rgba(0, 0, 0, 0.8956);
+    -waka-fg2: rgba(0, 0, 0, 0.6063);
+    -waka-fg3: rgba(0, 0, 0, 0.4458);
+
+    -waka-accent: #005fb8;
+    -waka-accent-sub: rgba(0, 95, 184, 0.1);
+
+    -waka-ok: #0f7b0f;
+    -waka-warn: #9d5d00;
+    -waka-bad: #c42b1c;
+
+    -waka-cls1: #3a6fd8;
+    -waka-cls2: #c9502f;
+    -waka-cls3: #2e9e74;
+}
+
+/* ================================================ Mica off, both themes =================== */
+
+/*
+ * G-016: turning Mica off does not merely drop the blur. The three layer fills that were tuned
+ * to sit on top of a backdrop are replaced by solid ones, because an alpha of 5% over nothing is
+ * invisible, and "the app looks finished with Mica off" is half of this stage's second exit test.
+ */
+
+.theme-dark.mica-off {
+    -waka-card: rgba(255, 255, 255, 0.098);
+    -waka-ctl: rgba(255, 255, 255, 0.084);
+    -waka-divider: rgba(255, 255, 255, 0.118);
+}
+
+.theme-light.mica-off {
+    -waka-card: #fafafa;
+    -waka-ctl: #fdfdfd;
+    -waka-divider: rgba(0, 0, 0, 0.112);
+}
+
+/* ================================================= AtlantaFX token map ==================== */
+
+/*
+ * The thirteen names below were verified on 2026-10-08 against atlantafx-base-3.0.0.jar's own
+ * primer-dark.css (S01-T09). Overriding them here is what makes an AtlantaFX Button come out in
+ * Fluent colours; the alternative is restyling every control, twice, by hand.
+ */
+
+.theme-dark,
+.theme-light {
+    -color-bg-default: -waka-mica;
+    -color-bg-subtle: -waka-card;
+    -color-bg-inset: -waka-ctl;
+
+    -color-border-muted: -waka-divider;
+    -color-border-default: -waka-stroke-ctl;
+
+    -color-fg-default: -waka-fg1;
+    -color-fg-muted: -waka-fg2;
+    -color-fg-subtle: -waka-fg3;
+
+    -color-accent-emphasis: -waka-accent;
+    -color-accent-muted: -waka-accent-sub;
+
+    -color-success-emphasis: -waka-ok;
+    -color-warning-emphasis: -waka-warn;
+    -color-danger-emphasis: -waka-bad;
+
+    /* DESIGN §Colour's --cls1..3. AtlantaFX has a chart ramp of eight; the first three carry the
+       graded values and the rest stay AtlantaFX's own, because nothing has graded them. */
+    -color-chart-1: -waka-cls1;
+    -color-chart-2: -waka-cls2;
+    -color-chart-3: -waka-cls3;
+}
+
+/* ====================================================== The window ======================= */
+
+/*
+ * Where the material is actually decided. With Mica on, the root paints nothing and the window
+ * manager's backdrop shows through the transparent scene fill; with Mica off, the root paints
+ * the opaque base and the window looks like an ordinary one.
+ */
+
+.waka-root.mica-on {
+    -fx-background-color: transparent;
+}
+
+.waka-root.mica-off {
+    -fx-background-color: -waka-mica;
+}
+
+/* ========================================================= Radii ========================= */
+
+/* G-017: 4px on controls, 8px on cards, flyouts and the window. There is no third radius. Each
+   region adds its own as it is built in T13-T20; these are the AtlantaFX controls that exist
+   before any of our own do. */
+
+.button,
+.toggle-button,
+.text-field,
+.text-area,
+.combo-box-base,
+.choice-box {
+    -fx-background-radius: 4px;
+    -fx-border-radius: 4px;
+}
+
+/* ================================================= Placeholder, T13 deletes =============== */
+
+/*
+ * Four surfaces and no text, so that all four combinations of light/dark and Mica on/off can be
+ * graded before the shell is framed. Everything in this section goes when the real regions
+ * arrive; if a rule here survives into S02, it was left behind by mistake.
+ */
+
+.waka-placeholder-card {
+    -fx-background-color: -waka-card;
+    -fx-background-radius: 8px;
+    -fx-border-color: -waka-stroke-ctl;
+    -fx-border-radius: 8px;
+    -fx-border-width: 1px;
+}
+
+.waka-placeholder-control {
+    -fx-background-color: -waka-ctl;
+    -fx-background-radius: 4px;
+    -fx-border-color: -waka-stroke-ctl;
+    -fx-border-radius: 4px;
+    -fx-border-width: 1px;
+}
+
+.waka-placeholder-divider {
+    -fx-background-color: -waka-divider;
+}
+
+.waka-placeholder-accent {
+    -fx-background-color: -waka-accent;
+}
