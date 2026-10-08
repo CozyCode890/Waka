@@ -15,6 +15,25 @@ bin/
 *.jar
 *.war
 
+# The About music file is the user's own and is never committed. A copyrighted master recording
+# inside a public GPLv3 repo would make the whole distribution non-redistributable — see D-026.
+assets/audio/*
+!assets/audio/README.md
+
+# Inno Setup writes here (S06). `out/` above does not match this name.
+installer/Output/
+
+# JVM crash and replay dumps. This project calls DWM through FFM, so these will appear.
+hs_err_pid*.log
+replay_pid*.log
+
+# Logs. If one ever needs committing as evidence, add an exception for its path here.
+*.log
+
+# Claude Code's own config IS tracked — the router, the slash commands and the SessionStart hook
+# are part of this project. Only the per-machine permission file is not.
+.claude/settings.local.json
+
 # IDE
 .idea/
 *.iml
